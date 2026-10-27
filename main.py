@@ -38,11 +38,13 @@ def load_private_env(path):
         pass
 
 load_private_env(BASE_DIR / ".env")
-DB = str(BASE_DIR / "finance.db")
-AUTH_DB = BASE_DIR / "auth.sqlite3"
-USER_DB_DIR = BASE_DIR / "user_data"
-SETUP_TOKEN_FILE = BASE_DIR / ".pf_setup_token"
-PROFILE_DIR = BASE_DIR / "profile_data"
+DATA_DIR = Path(os.environ.get("PF_DATA_DIR", str(BASE_DIR))).resolve()
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+DB = str(DATA_DIR / "finance.db")
+AUTH_DB = DATA_DIR / "auth.sqlite3"
+USER_DB_DIR = DATA_DIR / "user_data"
+SETUP_TOKEN_FILE = DATA_DIR / ".pf_setup_token"
+PROFILE_DIR = DATA_DIR / "profile_data"
 PROFILE_DIR.mkdir(mode=0o700, exist_ok=True)
 try:
     PROFILE_DIR.chmod(0o700)
@@ -1330,7 +1332,7 @@ def ensure_setup_token():
 
 
 ADMIN_SESSION_HOURS = 4
-ADMIN_CONFIG_PATH = BASE_DIR / ".pf_admin_auth.json"
+ADMIN_CONFIG_PATH = DATA_DIR / ".pf_admin_auth.json"
 
 def init_admin_auth_db():
     with auth_connect() as con:

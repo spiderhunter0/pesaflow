@@ -34,3 +34,7 @@ updates_staging/
 
 # Gitignore backups
 .gitignore.backup_*
+
+# Private setup token and storage-fix backup
+.pf_setup_token
+main.py.before_storage_fix
