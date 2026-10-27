@@ -289,8 +289,59 @@ async function deleteCurrentCategory(){
 function editCurrentCategory(){let c=state.categories.find(x=>x.name===state.current);if(!c)return;modalForm('Edit category',`<form id="editCatForm"><div class="formgrid"><div class="field full"><label>Category name</label><input id="editCatName" maxlength="40" value="${esc(c.name)}" required></div><div class="field"><label>Allocation percentage</label><input id="editCatPercent" type="number" min="0" max="100" value="${Number(c.percentage||0)}" required></div><div class="field"><label>Colour</label><select id="editCatColor">${[['#27856B','Emerald green'],['#4778d0','Blue'],['#b97833','Amber'],['#9163bd','Purple'],['#d66c78','Rose'],['#418c9d','Teal']].map(x=>`<option value="${x[0]}" ${x[0]===c.color?'selected':''}>${x[1]}</option>`).join('')}</select></div><div class="field full"><label>Icon</label><select id="editCatIcon">${['wallet','food','home','savings','business','car','travel','health','education'].map(x=>`<option value="${x}" ${x===c.icon?'selected':''}>${x}</option>`).join('')}</select></div></div><div class="form-actions"><button class="btn primary">Save changes</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
 $('editCatForm').onsubmit=async e=>{e.preventDefault();try{let name=$('editCatName').value.trim();await api('/categories/'+encodeURIComponent(c.name),{method:'PUT',body:JSON.stringify({name,percentage:Number($('editCatPercent').value),color:$('editCatColor').value,icon:$('editCatIcon').value})});state.current=name;closeModal();await refreshAll();go('category');toast('Category updated')}catch(err){toast(err.message)}}}
 function openCategoryAction(mode){go('move');if(mode==='expense'){$('moveKind').value='expense';$('fromAccount').value=state.current;$('toAccount').value='external'}else{$('moveKind').value='transfer';$('fromAccount').value=mode==='add'?'base':state.current;$('toAccount').value=mode==='add'?state.current:'base'}$('moveKind').dispatchEvent(new Event('change'));if(mode!=='expense'){$('fromAccount').value=mode==='add'?'base':state.current;$('toAccount').value=mode==='add'?state.current:'base'}}
-function openDeposit(){modalForm('Add funds to base account',`<div class="notice">This records a local test deposit. It is not a real bank or M-Pesa payment.</div><form id="depositForm"><div class="formgrid"><div class="field full"><label>Amount</label><input id="depositAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div><div class="field full"><label>Source</label><select id="depositSource"><option value="manual_test">Manual test deposit</option><option value="mpesa_sandbox">M-Pesa sandbox</option><option value="kcb_sandbox">KCB sandbox</option></select></div></div><div class="form-actions"><button class="btn primary">Record deposit</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
-$('depositForm').onsubmit=async e=>{e.preventDefault();let ref='PFDEP-'+Date.now();try{await api('/transactions',{method:'POST',body:JSON.stringify({reference:ref,source:$('depositSource').value,amount:$('depositAmount').value,status:'confirmed'})});await api('/allocate/'+encodeURIComponent(ref),{method:'POST'});closeModal();await refreshAll();toast('Deposit recorded and allocation rules applied')}catch(err){toast(err.message)}}}
+function openDeposit(){
+ modalForm('Add funds', `<div class="notice">M-PESA is sandbox-only. Approve the STK prompt on the test phone. Pesa Flow will allocate funds only after the callback is verified.</div>
+ <form id="mpesaDepositForm"><div class="formgrid">
+ <div class="field full"><label for="mpesaPhone">Kenyan M-PESA phone number</label><input id="mpesaPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="13" required placeholder="0712345678 or 254712345678"></div>
+ <div class="field full"><label for="mpesaAmount">Amount (KES, whole shillings)</label><input id="mpesaAmount" type="number" min="1" max="150000" step="1" required placeholder="100"></div>
+ </div><div id="mpesaPaymentStatus" class="notice" style="display:none;margin-top:14px;white-space:pre-wrap;overflow-wrap:anywhere"></div>
+ <div class="form-actions"><button id="mpesaSubmitBtn" type="submit" class="btn primary">Send STK prompt</button><button type="button" class="btn secondary" onclick="openManualTestDeposit()">Manual test deposit</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
+ const form=$('mpesaDepositForm');
+ form.onsubmit=async e=>{
+  e.preventDefault();
+  const button=$('mpesaSubmitBtn'), box=$('mpesaPaymentStatus');
+  const amount=Number($('mpesaAmount').value), phone=$('mpesaPhone').value.trim();
+  if(!Number.isInteger(amount)||amount<1||amount>150000){toast('Enter a whole KES amount from 1 to 150,000');return}
+  button.disabled=true;box.style.display='block';box.textContent='Contacting Daraja sandbox…';
+  try{
+   const result=await api('/api/mpesa/stk-push',{method:'POST',body:JSON.stringify({phone,amount})});
+   box.textContent='STK prompt requested. Approve it on the test phone.
+Reference: '+result.reference+'
+Status: pending';
+   let finalStatus=false;
+   for(let i=0;i<40;i++){
+    await new Promise(resolve=>setTimeout(resolve,3000));
+    let status;
+    try{status=await api('/api/mpesa/payment/'+encodeURIComponent(result.reference))}
+    catch(err){box.textContent='STK request sent, but status check failed: '+err.message+'
+Reference: '+result.reference;break}
+    box.textContent='Reference: '+status.reference+'
+Status: '+status.status.replaceAll('_',' ')+(status.receipt?'
+M-PESA receipt: '+status.receipt:'');
+    if(status.status==='allocated'){
+     box.textContent+='
+Payment verified and allocation completed.';
+     await refreshAll();toast('M-PESA sandbox payment allocated');finalStatus=true;break;
+    }
+    if(status.status==='failed'){
+     box.textContent+='
+Payment was not completed. No funds were allocated.';finalStatus=true;break;
+    }
+    if(status.status==='confirmed_unallocated'){
+     box.textContent+='
+Payment needs allocation review. Do not submit another payment for the same amount; keep this reference.';finalStatus=true;break;
+    }
+   }
+   if(!finalStatus && box.textContent.includes('Status: pending')) box.textContent+='
+Still waiting for confirmation. You can close this window and check your activity later.';
+  }catch(err){box.textContent='Could not start M-PESA STK Push: '+err.message}
+  finally{button.disabled=false}
+ };
+}
+function openManualTestDeposit(){
+ modalForm('Manual test deposit', `<div class="notice">This creates simulated test data only. It does not contact M-PESA or move real money.</div><form id="manualDepositForm"><div class="field"><label for="manualDepositAmount">Amount (KES)</label><input id="manualDepositAmount" type="number" min="0.01" step="0.01" required placeholder="100.00"></div><div class="form-actions"><button class="btn primary" type="submit">Record test deposit</button><button class="btn secondary" type="button" onclick="openDeposit()">Back to M-PESA</button></div></form>`);
+ $('manualDepositForm').onsubmit=async e=>{e.preventDefault();const amount=$('manualDepositAmount').value;const ref='PFTEST-'+Date.now();try{await api('/transactions',{method:'POST',body:JSON.stringify({reference:ref,source:'manual_test',amount,status:'confirmed'})});await api('/allocate/'+encodeURIComponent(ref),{method:'POST'});closeModal();await refreshAll();toast('Manual test deposit recorded')}catch(err){toast(err.message)}};
+}
 function modalForm(title,body){let old=$('modalBackdrop');if(old)old.remove();let el=document.createElement('div');el.id='modalBackdrop';el.style.cssText='position:fixed;inset:0;background:#122c2780;z-index:30;display:grid;place-items:center;padding:18px;overflow:auto';el.innerHTML=`<div style="width:min(560px,100%);background:white;border-radius:20px;padding:24px;box-shadow:0 25px 90px #0002;margin:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px"><h2 style="margin:0;font-size:21px">${esc(title)}</h2><button class="iconbtn" onclick="closeModal()">×</button></div>${body}</div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)closeModal()})}
 function closeModal(){let el=$('modalBackdrop');if(el)el.remove()}
 

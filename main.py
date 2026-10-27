@@ -761,6 +761,29 @@ def mpesa_callback(request: Request, payload: dict):
         return {"ResultCode": 0, "ResultDesc": "Callback received; payment requires verification/retry"}
 
 
+@app.get("/api/mpesa/payment/{reference}")
+def mpesa_payment_status(reference: str, request: Request):
+    user = getattr(request.state, "user", None)
+    if not user:
+        raise HTTPException(401, "Authentication required")
+    with auth_connect() as con:
+        row = con.execute("""SELECT internal_reference, amount, status, receipt,
+            created_at, processed_at FROM mpesa_payment_routes
+            WHERE internal_reference=? AND user_id=?""",
+            (reference, user["id"])).fetchone()
+    if not row:
+        raise HTTPException(404, "M-PESA payment not found")
+    return {
+        "reference": row["internal_reference"],
+        "amount": row["amount"],
+        "status": row["status"],
+        "receipt": row["receipt"],
+        "created_at": row["created_at"],
+        "processed_at": row["processed_at"],
+        "real_transfers_enabled": False,
+    }
+
+
 @app.post("/transactions")
 def add_transaction(data: TransactionIn):
     if data.status not in ("pending", "confirmed"):
