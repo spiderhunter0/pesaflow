@@ -1,0 +1,184 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Pesa Flow · Admin</title><style>
+:root{color-scheme:dark;--bg:#0b1120;--panel:#111c30;--line:#263750;--text:#edf4ff;--muted:#9aabc2;--accent:#61e6b4}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,sans-serif}.shell{max-width:1180px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0 24px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#123e38;color:var(--accent);font-size:22px;font-weight:800}.eyebrow{font-size:11px;letter-spacing:.16em;color:var(--accent);font-weight:800;text-transform:uppercase}h1{font-size:25px;margin:2px 0;letter-spacing:-.04em}h2{font-size:16px;margin:0 0 8px}.muted{color:var(--muted)}button{border:1px solid #354761;border-radius:10px;background:#17263d;color:var(--text);padding:10px 13px;font:inherit;font-weight:650;cursor:pointer}.primary{background:var(--accent);color:#06251d;border-color:var(--accent)}.actions{display:flex;gap:9px}.hero{padding:24px 0}.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}.card{grid-column:span 4;min-width:0;padding:20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#14223a,#101a2d)}.wide{grid-column:span 8}.full{grid-column:1/-1}.metric{font-size:27px;font-weight:750;margin:12px 0 3px}.tablewrap{overflow:auto;margin-top:14px}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line)}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}td{font-size:13px}.setting{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.setting span:first-child{color:var(--muted);text-transform:capitalize}.setting span:last-child{text-align:right;overflow-wrap:anywhere}.message{min-height:22px;color:var(--muted);font-size:13px}.upload{display:grid;gap:12px;margin-top:14px}.footer{padding:24px 0;color:var(--muted);font-size:12px}@media(max-width:780px){.shell{padding:15px}.card,.wide{grid-column:1/-1}.top{align-items:flex-start}.metric{font-size:24px}}@media(max-width:430px){.top{flex-direction:column}.actions{width:100%}.actions button{flex:1}}
+
+/* Company editor: clean vertical layout */
+#adminCompanyForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+#adminCompanyForm label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-weight: 650;
+}
+#adminCompanyForm input,
+#adminCompanyForm textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #0b1527;
+  color: var(--text);
+  font: inherit;
+}
+#adminCompanyForm textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+#adminCompanyForm button {
+  justify-self: start;
+}
+#adminCompanyForm .message {
+  margin: 0;
+}
+
+</style></head><body><div class="shell"><header class="top"><div class="brand"><div class="mark">P</div><div><div class="eyebrow">Pesa Flow · Private</div><h1>Control center</h1><div class="muted">System overview and administration</div></div></div><div class="actions"><button id="refresh">Refresh</button><button id="logout">Sign out</button></div></header><section class="hero"><div class="eyebrow">System snapshot</div><div class="muted">Operational status, account overview, safe settings and protected update staging.</div></section><section class="grid"><article class="card"><div class="muted">Application</div><div class="metric" id="server">Checking…</div><div class="muted" id="serverDetail">Contacting backend</div></article><article class="card"><div class="muted">Registered accounts</div><div class="metric" id="count">—</div><div class="muted">Authentication database</div></article><article class="card"><div class="muted">Auth database</div><div class="metric" id="db">Checking…</div><div class="muted">SQLite integrity check</div></article><article class="card wide"><h2>Registered users</h2><div class="muted">Latest accounts, up to 200 records</div><p><button id="usersBtn">Load users</button></p><div class="tablewrap"><table><thead><tr><th>Email</th><th>Name</th><th>Handle</th><th>Registered</th></tr></thead><tbody id="rows"><tr><td colspan="4" class="muted">Load users to view accounts.</td></tr></tbody></table></div><p class="message" id="usersMsg" aria-live="polite"></p></article><article class="card"><h2>Backend settings</h2><div class="muted">Safe operational settings only</div><div id="settings">Loading…</div><p><button id="settingsBtn">Refresh settings</button></p></article><article class="card full"><h2>Update staging</h2><div class="muted">ZIP files are staged for review and are not installed or executed automatically.</div><form id="upload" class="upload"><input type="file" name="file" accept=".zip" required><div><button class="primary" type="submit">Upload ZIP</button></div></form><p class="message" id="uploadMsg" aria-live="polite"></p></article></section>
+<article class="card full">
+<h2>Company information</h2>
+<div class="muted">Admin-only editor. Saved details are displayed to customers.</div>
+<form id="adminCompanyForm">
+<label>Instagram URL <input id="acInstagram" type="url"></label>
+<label>TikTok URL <input id="acTiktok" type="url"></label>
+<label>Facebook URL <input id="acFacebook" type="url"></label>
+<label>X URL <input id="acX" type="url"></label>
+<label>WhatsApp URL <input id="acWhatsapp" type="url"></label>
+<label>Telegram URL <input id="acTelegram" type="url"></label>
+<label>YouTube URL <input id="acYoutube" type="url"></label>
+<label>LinkedIn URL <input id="acLinkedin" type="url"></label>
+<label>Contact email <input id="acEmail" type="email"></label>
+<label>Contact phone <input id="acPhone"></label>
+<label>Contact WhatsApp <input id="acContactWhatsapp"></label>
+<label>Contact address <input id="acAddress"></label>
+<label>About <textarea id="acAbout"></textarea></label>
+<label>Privacy policy <textarea id="acPrivacy"></textarea></label>
+<label>Terms of service <textarea id="acTerms"></textarea></label>
+<button class="primary" type="submit">Save company information</button>
+<p class="message" id="adminCompanyMsg" aria-live="polite"></p>
+</form>
+</article>
+<footer class="footer">Separate admin session · 4-hour expiry · Rate-limited sign-in · Never share admin credentials.</footer></div><script>
+async function api(path,opts={}){const r=await fetch(path,{cache:'no-store',...opts});let d={};try{d=await r.json()}catch{}if(r.status===401){location.replace('/admin-login');throw Error('Session expired; sign in again.')}if(!r.ok)throw Error(d.detail||'Request failed');return d}async function overview(){try{const d=await api('/api/admin/overview');server.textContent='Online';serverDetail.textContent='Backend responding normally';count.textContent=d.registered_users??'—';db.textContent=d.auth_database??'Unknown'}catch(e){server.textContent='Unavailable';serverDetail.textContent=e.message;db.textContent='Unknown'}}async function settingsLoad(){settings.textContent='Loading…';try{const d=await api('/api/admin/settings');settings.replaceChildren();for(const [k,v] of Object.entries(d)){const row=document.createElement('div');row.className='setting';const a=document.createElement('span'),b=document.createElement('span');a.textContent=k.replaceAll('_',' ');b.textContent=String(v);row.append(a,b);settings.append(row)}}catch(e){settings.textContent=e.message}}usersBtn.onclick=async()=>{usersMsg.textContent='Loading…';rows.replaceChildren();try{const d=await api('/api/admin/users');for(const u of d.users||[]){const tr=document.createElement('tr');for(const v of [u.email,u.full_name,u.handle,u.created_at]){const td=document.createElement('td');td.textContent=v||'—';tr.append(td)}rows.append(tr)}usersMsg.textContent=(d.users||[]).length+' account(s) loaded.'}catch(e){usersMsg.textContent=e.message}};settingsBtn.onclick=settingsLoad;refresh.onclick=()=>{overview();settingsLoad()};upload.onsubmit=async e=>{e.preventDefault();uploadMsg.textContent='Uploading…';try{const d=await api('/api/admin/updates',{method:'POST',body:new FormData(upload)});uploadMsg.textContent=d.message+' File: '+d.filename;upload.reset()}catch(err){uploadMsg.textContent=err.message}};logout.onclick=async()=>{try{await api('/api/admin/logout',{method:'POST'})}catch{}location.replace('/admin-login')};overview();settingsLoad();
+</script>
+<section class="card" id="pf-secure-update-workflow" style="margin-top:16px;padding:16px">
+  <h2>Review &amp; Install Update</h2>
+  <p>Choose a staged ZIP, inspect every diff, then explicitly approve installation.</p>
+  <label for="pfUpdateFile">Staged update</label>
+  <select id="pfUpdateFile" style="width:100%;padding:10px;margin:8px 0">
+    <option value="">Choose an uploaded ZIP</option>
+  </select>
+  <button type="button" class="btn" id="pfReviewUpdateBtn">Review ZIP</button>
+  <p id="pfUpdateReviewStatus" role="status"></p>
+  <div id="pfUpdateDiffs"></div>
+  <div id="pfUpdateInstallBox" hidden style="margin-top:12px">
+    <p><strong>Read all changes above before continuing.</strong></p>
+    <label for="pfUpdateConfirm">Type INSTALL to approve these changes</label>
+    <input id="pfUpdateConfirm" autocomplete="off" style="width:100%;padding:10px;margin:8px 0" />
+    <button type="button" class="btn" id="pfInstallUpdateBtn">Install reviewed update</button>
+  </div>
+</section>
+<script>
+(function(){
+  const select=document.getElementById('pfUpdateFile');
+  const status=document.getElementById('pfUpdateReviewStatus');
+  const diffs=document.getElementById('pfUpdateDiffs');
+  const box=document.getElementById('pfUpdateInstallBox');
+  const confirmInput=document.getElementById('pfUpdateConfirm');
+  let reviewedFilename='';
+  async function api(url,opts={}) {
+    const response=await fetch(url,{credentials:'same-origin',...opts,headers:{'Content-Type':'application/json',...(opts.headers||{})}});
+    const data=await response.json().catch(()=>({detail:'Unexpected server response'}));
+    if(!response.ok) throw new Error(data.detail||data.message||('HTTP '+response.status));
+    return data;
+  }
+  async function refresh(){
+    try{
+      const data=await api('/api/admin/updates');
+      const files=Array.isArray(data.files)?data.files:[];
+      select.replaceChildren(new Option('Choose an uploaded ZIP',''));
+      for(const file of files) select.add(new Option(file.filename,file.filename));
+    }catch(e){
+      status.textContent='Upload a ZIP in the Update staging section first. '+e.message;
+    }
+  }
+  document.getElementById('pfReviewUpdateBtn').addEventListener('click',async()=>{
+    const filename=select.value;
+    if(!filename){status.textContent='Select a staged ZIP first.';return;}
+    status.textContent='Validating ZIP and preparing diffs…'; diffs.replaceChildren(); box.hidden=true;
+    try{
+      const data=await api('/api/admin/updates/'+encodeURIComponent(filename)+'/review');
+      reviewedFilename=filename;
+      const warning=document.createElement('p'); warning.textContent=data.warning||''; diffs.appendChild(warning);
+      for(const file of data.files){
+        const heading=document.createElement('h3'); heading.textContent=file.name+' ('+file.size_bytes+' bytes)'; diffs.appendChild(heading);
+        const pre=document.createElement('pre'); pre.textContent=file.diff||'(No text differences)'; pre.style.cssText='white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow:auto;padding:10px;border:1px solid #888;border-radius:8px'; diffs.appendChild(pre);
+      }
+      status.textContent='Review ready: '+data.files.length+' file(s), '+data.total_bytes+' bytes.';
+      box.hidden=false; confirmInput.value='';
+    }catch(e){status.textContent='Review failed: '+e.message;}
+  });
+  document.getElementById('pfInstallUpdateBtn').addEventListener('click',async()=>{
+    if(!reviewedFilename){status.textContent='Review a ZIP first.';return;}
+    if(confirmInput.value!=='INSTALL'){status.textContent='Type INSTALL exactly.';return;}
+    if(!confirm('Install the reviewed files? Existing files will be backed up.')) return;
+    status.textContent='Installing…';
+    try{
+      const data=await api('/api/admin/updates/'+encodeURIComponent(reviewedFilename)+'/install',{method:'POST',body:JSON.stringify({confirmation:confirmInput.value})});
+      status.textContent=data.message+' Backup: '+data.backup+'. Restart the server to load Python changes.';
+      box.hidden=true; reviewedFilename='';
+    }catch(e){status.textContent='Install failed: '+e.message;}
+  });
+  refresh();
+})();
+</script>
+
+<script>\n
+async function loadAdminCompanyInfo(){
+ const msg=document.getElementById('adminCompanyMsg');
+ try {
+  const d=await api('/api/admin/company-info');
+  const socials=d.socials||{};
+  const map={
+   acInstagram:socials.instagram, acTiktok:socials.tiktok,
+   acFacebook:socials.facebook, acX:socials.x,
+   acWhatsapp:socials.whatsapp, acTelegram:socials.telegram,
+   acYoutube:socials.youtube, acLinkedin:socials.linkedin,
+   acEmail:d.contact_email, acPhone:d.contact_phone,
+   acContactWhatsapp:d.contact_whatsapp, acAddress:d.contact_address,
+   acAbout:d.about, acPrivacy:d.privacy_policy, acTerms:d.terms
+  };
+  for(const [id,value] of Object.entries(map)){
+   const el=document.getElementById(id);
+   if(el) el.value=value||'';
+  }
+  msg.textContent='Company information loaded.';
+ } catch(e) { msg.textContent=e.message; }
+}
+document.getElementById('adminCompanyForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const msg=document.getElementById('adminCompanyMsg');
+ msg.textContent='Saving…';
+ const value=id=>document.getElementById(id).value;
+ const payload={
+  socials:{
+   instagram:value('acInstagram').trim(), tiktok:value('acTiktok').trim(),
+   facebook:value('acFacebook').trim(), x:value('acX').trim(),
+   whatsapp:value('acWhatsapp').trim(), telegram:value('acTelegram').trim(),
+   youtube:value('acYoutube').trim(), linkedin:value('acLinkedin').trim()
+  },
+  contact_email:value('acEmail').trim(), contact_phone:value('acPhone').trim(),
+  contact_whatsapp:value('acContactWhatsapp').trim(),
+  contact_address:value('acAddress').trim(), about:value('acAbout'),
+  privacy_policy:value('acPrivacy'), terms:value('acTerms')
+ };
+ try {
+  await api('/api/admin/company-info',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  msg.textContent='Company information saved.';
+ } catch(err) { msg.textContent=err.message; }
+});
+loadAdminCompanyInfo();
+\n</script>\n</body></html>

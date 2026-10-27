@@ -1,0 +1,36 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+.pf_admin_auth.json
+*.pem
+*.key
+
+# Databases and private user data
+*.db
+*.sqlite
+*.sqlite3
+user_data/
+profile_data/
+
+# Local environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+node_modules/
+
+# Backups, logs and temporary work
+backups/
+backups-*/
+*.bak
+*.backup
+*.log
+updates_staging/
+*.zip
+
+# Local Git and editor files
+.DS_Store
+
+# Gitignore backups
+.gitignore.backup_*

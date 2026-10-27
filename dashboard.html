@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pesa Flow — Royal Luxury Banking</title>
+<style>
+:root{--bg:#f5f7f8;--panel:#fff;--ink:#172b2a;--muted:#71817e;--line:#e7edeb;--green:#087f68;--green2:#e7f5f0;--lime:#c9ef8a;--nav:#133b34;--red:#c64c4c;--shadow:0 8px 28px rgba(27,61,52,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr)}aside{background:var(--nav);color:white;padding:27px 18px;display:flex;flex-direction:column;gap:28px;min-height:100vh}.brand{display:flex;align-items:center;gap:11px;padding:0 10px}.brandmark{width:38px;height:38px;background:var(--lime);border-radius:13px;display:grid;place-items:center;color:var(--nav);font-size:21px;font-weight:900}.brandname{font-size:19px;font-weight:800;letter-spacing:-.6px}.brandname small{display:block;color:#a7c9be;font-size:10px;letter-spacing:2px;font-weight:600;margin-top:1px}.navlabel{color:#87aca1;font-size:10px;font-weight:800;letter-spacing:1.6px;padding:0 12px;margin-bottom:6px}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#c5d9d3;border-radius:12px;text-align:left;padding:12px 13px;display:flex;gap:12px;align-items:center;font-weight:600}.nav button .ico{width:22px;text-align:center;font-size:17px}.nav button.active,.nav button:hover{background:#24574c;color:white}.sidefoot{margin-top:auto;padding:15px 12px;border:1px solid #376458;border-radius:15px;color:#b9d2ca;font-size:12px}.sidefoot strong{display:block;color:white;font-size:13px;margin-bottom:5px}.main{min-width:0}.topbar{height:82px;padding:0 clamp(18px,4vw,44px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(255,255,255,.8);gap:15px}.crumb{color:var(--muted);font-size:13px}.topright{display:flex;align-items:center;gap:12px}.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#d8eee6;color:#116451;font-weight:800}.iconbtn{width:39px;height:39px;border:1px solid var(--line);background:white;border-radius:12px;color:var(--ink)}.content{padding:30px clamp(18px,4vw,44px) 50px;max-width:1500px;margin:auto}.welcome{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}.eyebrow{color:var(--green);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.welcome h1{font-size:clamp(25px,3vw,34px);letter-spacing:-1.2px;margin:6px 0}.welcome p{color:var(--muted);margin:0}.btn{border:0;border-radius:11px;padding:11px 16px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:8px}.primary{background:var(--green);color:white}.primary:hover{background:#066d5a}.secondary{background:white;border:1px solid var(--line);color:var(--ink)}.soft{background:var(--green2);color:var(--green)}.danger{background:#fff0f0;color:var(--red)}.hero{background:var(--nav);color:white;border-radius:22px;padding:27px 30px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;position:relative;overflow:hidden;box-shadow:var(--shadow);margin-bottom:22px}.hero:after{content:"";position:absolute;width:300px;height:300px;border:1px solid #477367;border-radius:50%;right:-70px;top:-130px;box-shadow:0 0 0 28px #ffffff05,0 0 0 58px #ffffff05}.hero-label{color:#b4d0c7;font-size:12px;font-weight:650}.hero-amount{font-size:clamp(32px,4.2vw,45px);font-weight:800;letter-spacing:-1.7px;margin:7px 0 17px}.hero-foot{display:flex;gap:8px;align-items:center;color:#b6d4cb;font-size:12px}.dot{height:7px;width:7px;background:var(--lime);border-radius:50%}.hero-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;z-index:1;flex-wrap:wrap}.hero-right .btn{padding:12px 16px}.hero-right .secondary{background:#ffffff12;color:white;border-color:#ffffff2b}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:25px}.stat,.panel,.category-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}.stat{padding:19px}.stat-top{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px;font-weight:650}.stat-icon{width:34px;height:34px;border-radius:11px;background:var(--green2);display:grid;place-items:center;color:var(--green);font-size:16px}.stat strong{display:block;font-size:23px;letter-spacing:-.6px;margin-top:13px}.stat small{display:block;color:var(--muted);margin-top:4px;font-size:12px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:27px 0 14px}.sectionhead h2{font-size:18px;margin:0;letter-spacing:-.4px}.sectionhead p{margin:4px 0 0;color:var(--muted);font-size:12px}.category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.category-card{padding:19px;text-align:left;cursor:pointer;color:inherit;transition:transform .15s,border-color .15s}.category-card:hover{transform:translateY(-2px);border-color:#b4d8cd}.category-card.selected{border:2px solid var(--green);background:#edf8f3;box-shadow:0 0 0 3px #087f6818}.category-card.selecting{user-select:none;-webkit-user-select:none;touch-action:pan-y}.category-tools{display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border:1px solid #b8dacf;background:#f1faf6;border-radius:13px}.category-tools.show{display:flex}.category-tools .tools-left,.category-tools .tools-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.category-tools strong{font-size:13px;color:var(--green)}.cat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.cat-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:var(--green2)}.arrow{color:#8b9b97}.cat-name{font-size:14px;font-weight:750;margin-top:15px}.cat-balance{font-size:24px;font-weight:800;letter-spacing:-.6px;margin-top:5px}.cat-bottom{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;margin-top:13px}.pill{padding:5px 8px;background:#eef7f3;color:var(--green);border-radius:20px;font-weight:700}.layout-two{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin-top:24px}.panel{padding:20px;min-width:0}.panel h3{margin:0;font-size:16px}.panel-sub{font-size:12px;color:var(--muted);margin:5px 0 15px}.txrow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.txrow:last-child{border-bottom:0}.txico{width:39px;height:39px;border-radius:12px;background:#f0f5f3;display:grid;place-items:center;flex-shrink:0}.txdesc{min-width:0;flex:1}.txdesc strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.txdesc small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.txamount{font-size:13px;font-weight:800;text-align:right}.in{color:var(--green)}.out{color:var(--red)}.empty{padding:28px 10px;text-align:center;color:var(--muted);font-size:13px}.page{display:none}.page.active{display:block}.back{display:inline-flex;gap:7px;align-items:center;color:var(--green);font-weight:750;border:0;background:none;padding:0;margin-bottom:18px}.detailhead{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.detail-title{display:flex;align-items:center;gap:14px}.detail-title .cat-icon{width:55px;height:55px}.detail-title h1{font-size:27px;letter-spacing:-.8px;margin:0}.detail-title p{margin:4px 0 0;color:var(--muted);font-size:13px}.detail-balance{padding:23px;background:var(--nav);color:white;border-radius:18px;margin-bottom:18px}.detail-balance small{color:#b5d2c9}.detail-balance strong{display:block;font-size:32px;margin:5px 0 15px}.detail-actions{display:flex;gap:8px;flex-wrap:wrap}.detail-actions .btn{font-size:12px;padding:9px 12px}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:grid;gap:6px}.field label{font-size:12px;color:#526561;font-weight:750}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid #dfe8e4;border-radius:10px;background:white;color:var(--ink);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#4b9b87;box-shadow:0 0 0 3px #087f6812}.field.full{grid-column:1/-1}.form-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}.notice{padding:12px 14px;border-radius:11px;background:#edf7f2;color:#1b725e;font-size:12px;margin-bottom:16px}.settings-list{display:grid;gap:13px;max-width:700px}.setting{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px;border:1px solid var(--line);border-radius:14px;background:white}.setting strong{display:block}.setting small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.setting select{padding:10px;border:1px solid var(--line);border-radius:10px;background:white}.toast{position:fixed;right:20px;bottom:20px;background:#173d35;color:white;padding:13px 17px;border-radius:12px;box-shadow:var(--shadow);display:none;z-index:20;max-width:calc(100vw - 40px)}.toast.show{display:block}.mobile-nav{display:none}.smallmuted{color:var(--muted);font-size:12px}
+@media(max-width:1050px){.app{grid-template-columns:215px minmax(0,1fr)}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{grid-template-columns:1fr}.hero-right{justify-content:flex-start}.layout-two{grid-template-columns:1fr}}
+@media(max-width:700px){.app{display:block}aside{display:none}.topbar{height:65px;padding:0 17px}.content{padding:23px 16px 92px}.welcome{align-items:flex-start}.welcome .btn{font-size:12px;padding:10px}.hero{padding:22px;border-radius:18px}.hero-right{justify-content:flex-start}.stats{grid-template-columns:1fr 1fr;gap:10px}.stat{padding:14px}.stat:last-child{grid-column:1/-1}.stat strong{font-size:20px}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.category-card{padding:14px}.cat-balance{font-size:20px}.cat-name{margin-top:11px}.layout-two{margin-top:18px}.panel{padding:16px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.detailhead{align-items:flex-start;flex-direction:column}.detail-title h1{font-size:23px}.setting{align-items:flex-start;flex-direction:column}.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom));justify-content:space-around;z-index:10}.mobile-nav button{border:0;background:none;color:#73827e;font-size:10px;display:grid;gap:3px;justify-items:center;padding:5px 8px;font-weight:700}.mobile-nav button span{font-size:19px}.mobile-nav button.active{color:var(--green)}.topright .crumb{display:none}}
+
+/* Royal Luxury Pesa Flow theme — visual layer only */
+:root{
+ --bg:#03131a;--panel:#061b24;--ink:#f5f0df;--muted:#a4b9bf;--line:#16404a;
+ --green:#00c69a;--green2:#073b35;--lime:#f2c66d;--nav:#020d13;
+ --red:#ff7777;--shadow:0 12px 34px rgba(0,0,0,.24);
+ --gold:#e9bd62;--gold-soft:#49381b;--blue:#149bd7;--purple:#9b70ed;
+}
+*{box-sizing:border-box}
+body{background:radial-gradient(ellipse at 80% 0%,#092b32 0%,var(--bg) 50%);color:var(--ink)}
+aside{background:linear-gradient(180deg,#03121a,#061d24 65%,#07131a);border-right:1px solid #173c43}
+.brandmark{background:linear-gradient(145deg,#f7d985,#b77b28);color:#09151a;border-radius:50%;box-shadow:0 0 24px #d9ad4c25}
+.brandname{font-family:Georgia,serif;color:#f5d78c;letter-spacing:0}
+.brandname small{color:#b6c9c7;letter-spacing:1.6px}
+.navlabel{color:#a98a4e}
+.nav button{color:#d0dce0;border:1px solid transparent}
+.nav button.active,.nav button:hover{background:linear-gradient(100deg,#173d3c,#20352e);color:#ffe3a0;border-color:#806432}
+.sidefoot{border-color:#5b492b;background:#091a20;color:#b7c8c7}
+.sidefoot strong{color:#f4d58c}
+.topbar{background:rgba(2,15,21,.92);border-bottom-color:#173d45;color:var(--ink)}
+.avatar{background:linear-gradient(145deg,#f7d985,#98702b);color:#07151a}
+.iconbtn{background:#071b23;border-color:#24434a;color:#f0d48b}
+.crumb{color:#a9c0c4}
+.content{max-width:1600px}
+.eyebrow{color:#e5bf68}
+.welcome h1,.sectionhead h2,.panel h3{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.35px}
+.btn{border-radius:10px}
+.primary{background:linear-gradient(135deg,#f3d17b,#c28a32);color:#10191b;box-shadow:0 5px 18px #c99a3a1a}
+.primary:hover{background:linear-gradient(135deg,#ffe5a1,#d5a44a)}
+.secondary{background:#061a22;border-color:#2d535a;color:#e9e3d2}
+.secondary:hover{border-color:#d0a64d;color:#ffe4a0}
+.soft{background:#0b3935;color:#5ce3bf}
+.danger{background:#381b20;color:#ff9b9b}
+.hero{background:linear-gradient(115deg,#06232a 0%,#06151d 68%,#102b2a 100%);border:1px solid #7c6337;border-radius:20px;box-shadow:0 16px 45px #0005}
+.hero:after{border-color:#9c7b3e;box-shadow:0 0 0 28px #f0c96a08,0 0 0 58px #f0c96a06}
+.hero-label{color:#c8d9d5}
+.hero-amount{font-family:Georgia,"Times New Roman",serif;color:#ffe4a0;letter-spacing:-1px}
+.hero-foot{color:#b9d5ce}
+.dot{background:#00d4a6;box-shadow:0 0 10px #00d4a680}
+.stat,.panel,.category-card{background:linear-gradient(145deg,#071e27,#04161e);border-color:#17444e;box-shadow:0 10px 28px #0002}
+.stat-top{color:#a8c0c4}
+.stat-icon{background:#123d38;color:#59e1bc;border:1px solid #28645a}
+.stat strong{color:#fff2d0}
+.sectionhead h2{color:#f7e6bb}
+.sectionhead p,.stat small,.panel-sub{color:#a5bdc1}
+.category-card{position:relative;overflow:hidden}
+.category-card:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(#f3d27f,#9a702d);opacity:.85}
+.category-card:hover{transform:translateY(-2px);border-color:#b69551;box-shadow:0 12px 30px #0005}
+.category-card.selected{border:2px solid #d6b15e;background:#0c302e;box-shadow:0 0 0 3px #d6b15e15}
+.category-tools{border-color:#36695f;background:#082d2a;color:#d9efe6}
+.category-tools strong{color:#70e2bf}
+.cat-icon{background:#123a37;color:#e8cc82;border:1px solid #2d665b}
+.cat-name{color:#f5e9c8}
+.cat-balance{color:#fff0cb;font-family:Georgia,"Times New Roman",serif}
+.cat-bottom{color:#a7c1c4}
+.pill{background:#123c35;color:#72e5c1}
+.arrow{color:#d4b76e}
+.txrow{border-bottom-color:#173d46}
+.txico{background:#0c3438;color:#e6c978;border:1px solid #1d5557}
+.txdesc strong{color:#f2f0e5}
+.txdesc small{color:#9fb8bd}
+.in{color:#48dfb3}.out{color:#ff8585}
+.empty{color:#9eb7bb}
+.detail-title h1{font-family:Georgia,"Times New Roman",serif;color:#f6df9f}
+.detail-title p{color:#a7bec1}
+.detail-balance{background:linear-gradient(120deg,#0a3435,#06171f);border:1px solid #7c6337}
+.detail-balance small{color:#b8d3cc}
+.detail-balance strong{font-family:Georgia,"Times New Roman",serif;color:#ffe5a2}
+.field label{color:#c0d2d1}
+.field input,.field select,.field textarea{background:#04171f;border-color:#28505a;color:#f5f0df}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#d9b45c;box-shadow:0 0 0 3px #d9b45c18}
+.notice{background:#0b332f;color:#8de7c8;border:1px solid #20564c}
+.setting{background:#061a22;border-color:#20444c}
+.setting small{color:#a7bdc0}
+.setting select{background:#04171f;border-color:#28505a;color:#f5f0df}
+.toast{background:#092e2d;border:1px solid #b18c42;color:#ffedbd}
+.mobile-nav{background:rgba(3,17,23,.97);border-top-color:#20434a}
+.mobile-nav button{color:#9bb2b7}
+.mobile-nav button.active{color:#f2ca70}
+.smallmuted{color:#9db5ba}
+@media(max-width:700px){
+ .hero{padding:21px;border-radius:17px}
+ .content{padding-bottom:100px}
+ .mobile-nav{backdrop-filter:blur(16px)}
+ .category-card{background:linear-gradient(145deg,#08242b,#04151d)}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="brand"><div class="brandmark">♛</div><div class="brandname">pesa flow<small>MONEY, IN FLOW</small></div></div>
+ <div><div class="navlabel">WORKSPACE</div><nav class="nav">
+  <button class="active" data-page="overview"><span class="ico">▦</span>Overview</button>
+  <button data-page="categories"><span class="ico">◫</span>My categories</button>
+  <button data-page="transactions"><span class="ico">⇄</span>Transactions</button>
+  <button data-page="move"><span class="ico">↗</span>Move money</button>
+ </nav></div>
+ <div><div class="navlabel">PREFERENCES</div><nav class="nav">
+  <button data-page="settings"><span class="ico">⚙</span>Settings</button>
+ </nav></div>
+ <div class="sidefoot"><strong>One balance. Your rules.</strong>Organise your money your way. Internal movements are recorded locally and do not move real bank funds.</div>
+</aside>
+<main class="main">
+ <header class="topbar"><div class="crumb" id="crumb">Workspace / Overview</div><div class="topright"><button class="iconbtn" title="Refresh" onclick="refreshAll()">↻</button><div class="avatar">PF</div></div></header>
+ <div class="content">
+  <section class="page active" id="page-overview">
+   <div class="welcome"><div><div class="eyebrow">YOUR MONEY, ORGANISED</div><h1>Good to see you.</h1><p>Here’s how your money is flowing today.</p></div><button class="btn primary" onclick="go('move')">＋ Move money</button></div>
+   <div class="hero"><div><div class="hero-label">Total funds across your accounts</div><div class="hero-amount" id="totalFunds">—</div><div class="hero-foot"><span class="dot"></span><span>Base account + all categories</span></div></div><div class="hero-right"><button class="btn" style="background:var(--lime);color:var(--nav)" onclick="openDeposit()">＋ Add funds</button><button class="btn secondary" onclick="go('categories')">View categories ↗</button></div></div>
+   <div class="stats">
+    <div class="stat"><div class="stat-top">Base account <span class="stat-icon">◉</span></div><strong id="baseBalance">—</strong><small>Funds not allocated to categories</small></div>
+    <div class="stat"><div class="stat-top">In categories <span class="stat-icon">◫</span></div><strong id="categoryTotal">—</strong><small id="categoryCount">Across your categories</small></div>
+    <div class="stat"><div class="stat-top">Categories <span class="stat-icon">▦</span></div><strong id="categoryNumber">—</strong><small>Each with its own activity</small></div>
+   </div>
+   <div class="sectionhead"><div><h2>Your categories</h2><p>Tap to open a category, or manage categories to select and delete several.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="toggleCategoryManagement()" id="overviewManageBtn">☑ Manage</button><button class="btn secondary" onclick="openCreateCategory()">＋ New category</button></div></div>
+   <div class="category-tools" id="overviewCategoryTools"></div><div class="category-grid" id="overviewCategories"></div>
+   <div class="layout-two"><div class="panel"><h3>Recent activity</h3><div class="panel-sub">Latest deposits, transfers and spending</div><div id="recentActivity"></div></div><div class="panel"><h3>Quick actions</h3><div class="panel-sub">Manage money without losing track.</div>
+    <button class="btn secondary" style="width:100%;justify-content:flex-start;margin:5px 0" onclick="openCreateCategory()">＋ Create a category</button>
+    <button class="btn secondary" style="width:100%;justify-content:flex-start;margin:5px 0" onclick="go('move')">⇄ Transfer between accounts</button>
+    <button class="btn secondary" style="width:100%;justify-content:flex-start;margin:5px 0" onclick="go('settings')">⚙ Currency & preferences</button>
+   </div></div>
+  </section>
+  <section class="page" id="page-categories">
+   <div class="welcome"><div><div class="eyebrow">YOUR ACCOUNTS</div><h1>My categories</h1><p>Create your own money spaces and track each one separately.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="toggleCategoryManagement()" id="allManageBtn">☑ Manage</button><button class="btn primary" onclick="openCreateCategory()">＋ New category</button></div></div>
+   <div class="notice">Each category has an individual balance and transaction history. Transfers update both accounts, while category spending reduces that category only.</div>
+   <div class="category-tools" id="allCategoryTools"></div><div class="category-grid" id="allCategories"></div>
+  </section>
+  <section class="page" id="page-category">
+   <button class="back" onclick="go('categories')">← All categories</button>
+   <div class="detailhead"><div class="detail-title"><div class="cat-icon" id="detailIcon">◫</div><div><h1 id="detailName">Category</h1><p id="detailSubtitle">Your category account</p></div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" onclick="editCurrentCategory()">✎ Edit category</button><button class="btn danger" onclick="deleteCurrentCategory()">⌫ Delete category</button></div></div>
+   <div class="detail-balance"><small>Available balance</small><strong id="detailBalance">—</strong><div class="detail-actions"><button class="btn" style="background:var(--lime);color:var(--nav)" onclick="openCategoryAction('expense')">− Record spending</button><button class="btn secondary" onclick="openCategoryAction('transfer')">⇄ Transfer funds</button><button class="btn secondary" onclick="openCategoryAction('add')">＋ Add funds</button></div></div>
+   <div class="layout-two" style="margin-top:0"><div class="panel"><h3>Transaction history</h3><div class="panel-sub">Every recorded movement involving this category.</div><div id="categoryActivity"></div></div><div class="panel"><h3>Category details</h3><div class="panel-sub">How this account is configured.</div><div id="categoryInfo"></div></div></div>
+  </section>
+  <section class="page" id="page-transactions">
+   <div class="welcome"><div><div class="eyebrow">YOUR MONEY HISTORY</div><h1>Transactions</h1><p>Deposits, allocations, transfers and category spending.</p></div><button class="btn primary" onclick="openDeposit()">＋ Add funds</button></div>
+   <div class="panel"><div id="allActivity"></div></div>
+  </section>
+  <section class="page" id="page-move">
+   <div class="welcome"><div><div class="eyebrow">MOVE WITH PURPOSE</div><h1>Move money</h1><p>Transfer between your base account and categories, or record a category expense.</p></div></div>
+   <div class="panel" style="max-width:800px"><div class="notice">Transfers are internal bookkeeping records in this local app. They do not send money through M-Pesa or a bank.</div>
+    <form id="movementForm"><div class="formgrid">
+     <div class="field"><label for="fromAccount">From account</label><select id="fromAccount" required></select></div>
+     <div class="field"><label for="toAccount">To account</label><select id="toAccount" required></select></div>
+     <div class="field"><label for="moveAmount">Amount</label><input id="moveAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
+     <div class="field"><label for="moveKind">Transaction type</label><select id="moveKind"><option value="transfer">Transfer between my accounts</option><option value="expense">Category spending / payment</option></select></div>
+     <div class="field full"><label for="moveNote">Description (optional)</label><input id="moveNote" maxlength="200" placeholder="e.g. Weekly groceries, rent transfer"></div>
+    </div><div class="form-actions"><button class="btn primary" type="submit">Confirm movement</button><button class="btn secondary" type="reset">Clear</button></div></form>
+   </div>
+   <div class="panel" style="max-width:800px;margin-top:17px"><h3>Available balances</h3><div class="panel-sub">Choose the source account above based on these balances.</div><div id="movementBalances"></div></div>
+  </section>
+  <section class="page" id="page-settings">
+   <div class="welcome"><div><div class="eyebrow">YOUR CONTROL CENTRE</div><h1>Settings</h1><p>Manage your profile, money preferences, privacy and help.</p></div></div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>1. Account</h2><p>Update the details shown on your Pesa Flow account.</p></div></div>
+    <div id="profileSummary" class="setting">
+     <div><strong id="profileSummaryName">Your account</strong><small id="profileSummaryEmail">Manage your personal details and profile photo.</small></div>
+     <button class="btn secondary" type="button" onclick="toggleProfileEditor()">Edit profile</button>
+    </div>
+    <form id="profileForm" style="display:none"><div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap"><img id="profilePreview" alt="Profile photo" src="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid #c5a45d;background:#e5f2ec;display:none"><div id="profileInitials" class="avatar" style="width:76px;height:76px;font-size:22px;border:3px solid #c5a45d">PF</div><div><label class="btn secondary" for="profilePhotoInput">Choose photo</label><input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" style="display:none"><button type="button" class="btn secondary" id="removeProfilePhoto" onclick="removeProfilePhoto()" style="margin-left:6px">Remove photo</button><div class="smallmuted" style="margin-top:7px">PNG, JPEG or WebP; maximum 1 MB.</div></div></div>
+     <div class="formgrid"><div class="field"><label for="profileFullName">Full name</label><input id="profileFullName" maxlength="80" required></div><div class="field"><label for="profileEmail">Email address</label><input id="profileEmail" type="email" maxlength="254" required></div><div class="field"><label for="profilePhone">Phone number</label><input id="profilePhone" type="tel" maxlength="40" placeholder="Add phone number"></div><div class="field"><label for="profileAddress">Address</label><input id="profileAddress" maxlength="250" placeholder="Add address"></div></div><div class="form-actions"><button class="btn primary" type="submit">Save profile</button></div></form>
+   </div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>2. Security & Privacy</h2><p>Understand the current protections and available controls.</p></div></div><div class="setting"><div><strong>Session security</strong><small>Sessions use an authenticated account. Sign out from Account Actions when finished.</small></div><span class="pill">Session protected</span></div><div class="setting"><div><strong>Password management</strong><small>Password change is not currently available in this dashboard.</small></div><span class="pill">Not yet available</span></div><div class="setting"><div><strong>Privacy notice</strong><small>Your financial records should only be accessed through your authenticated account. Avoid sharing passwords or setup tokens.</small></div><button class="btn secondary" onclick="showInfo('Privacy notice', 'Pesa Flow uses account authentication to protect access to your account. This local/test build does not enable real bank or M-PESA transfers. A complete published Privacy Policy, data-retention details and support contact must be finalized before public launch.')">Read notice</button></div></div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>3. Money Preferences</h2><p>Choose display currency and automatic deposit allocations.</p></div></div>
+    <div class="setting"><div><strong>Preferred currency</strong><small>Changes display only; it does not convert balances.</small></div><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="currencySelect"><option value="KES">KES — Kenyan shilling</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — Pound sterling</option><option value="TZS">TZS — Tanzanian shilling</option><option value="UGX">UGX — Ugandan shilling</option><option value="NGN">NGN — Nigerian naira</option><option value="ZAR">ZAR — South African rand</option><option value="INR">INR — Indian rupee</option><option value="AED">AED — UAE dirham</option><option value="CAD">CAD — Canadian dollar</option><option value="AUD">AUD — Australian dollar</option><option value="JPY">JPY — Japanese yen</option><option value="CHF">CHF — Swiss franc</option><option value="CNY">CNY — Chinese yuan</option></select><button class="btn primary" onclick="saveCurrency()">Save</button></div></div>
+    <div class="setting"><div><strong>Automatic allocation rules</strong><small>Set the percentage of incoming deposits assigned to each category.</small></div><button class="btn secondary" onclick="openRules()">Manage rules</button></div>
+    <div class="panel" id="rulesPanel" style="display:none;margin-top:17px"><h3>Allocation rules</h3><div class="panel-sub">Percentages must total 100% or less. The remainder stays in the base account.</div><form id="rulesForm"><div id="rulesFields" class="formgrid"></div><div class="form-actions"><button class="btn primary" type="submit">Save allocation rules</button><button type="button" class="btn secondary" onclick="document.getElementById('rulesPanel').style.display='none'">Close</button></div></form></div>
+   </div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>4. Notifications</h2><p>Notification preferences are planned but are not yet connected to a notification service.</p></div></div><div class="setting"><div><strong>Transaction and allocation alerts</strong><small>Will be available when notification delivery is implemented.</small></div><span class="pill">Coming later</span></div></div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>5. Contact & Support</h2><p>Get help with account access or report a problem.</p></div></div><div class="setting"><div><strong>Support contact</strong><small id="supportContactDetails">Loading support details…</small></div><button class="btn secondary" type="button" onclick="showSupportContact()">View contact</button></div><div class="setting"><div><strong>Report a problem</strong><small>For now, keep a copy of the exact error message and share it with the developer.</small></div><button class="btn secondary" onclick="showInfo('Report a problem', 'Copy the exact error message, note what you clicked just before it appeared, and do not include your password, setup token or financial secrets.')">How to report</button></div></div>
+   <div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>6. About Pesa Flow</h2><p>Learn about the Pesa Flow project.</p></div></div><div class="setting"><div><strong>About Pesa Flow</strong><small>Organise money into categories with percentage-based allocation rules.</small></div><button class="btn secondary" onclick="showInfo('About Pesa Flow', 'Pesa Flow is a finance-management project. This build is in local/test mode; real bank and M-PESA transfers are not enabled.')">View details</button></div></div>
+<div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>7. Legal</h2><p>Terms, privacy policy and financial disclaimer.</p></div></div><div class="setting"><div><strong>Terms of Service</strong><small id="termsSummary">Loading terms…</small></div><button class="btn secondary" onclick="showCompanyDocument('terms','Terms of Service')">Read terms</button></div><div class="setting"><div><strong>Privacy Policy</strong><small id="privacySummary">Loading privacy policy…</small></div><button class="btn secondary" onclick="showCompanyDocument('privacy_policy','Privacy Policy')">Read policy</button></div><div class="setting"><div><strong>Financial disclaimer</strong><small>Pesa Flow is not a bank in this test build. Displayed balances and recorded deposits do not prove that real funds moved.</small></div><button class="btn secondary" onclick="showInfo('Financial disclaimer', 'This test build records local financial data only. Do not use it as proof of payment, and do not enter real banking credentials. Live transfers are disabled.')">Read disclaimer</button></div></div>
+<div class="panel" style="max-width:900px;margin-bottom:16px"><div class="sectionhead" style="margin-top:0"><div><h2>8. Account Actions</h2><p>Manage your signed-in session.</p></div></div><div class="setting"><div><strong>Sign out</strong><small>Sign out of Pesa Flow on this device.</small></div><button class="btn secondary" type="button" onclick="signOut()">Sign out</button></div></div>
+
+ </div>
+  </section>
+  </main>
+</div>
+<nav class="mobile-nav"><button class="active" data-page="overview"><span>▦</span>Home</button><button data-page="categories"><span>◫</span>Categories</button><button data-page="transactions"><span>⇄</span>Activity</button><button data-page="move"><span>↗</span>Move</button><button data-page="settings"><span>⚙</span>Settings</button></nav>
+<div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id);
+let state={currency:'KES',base:0,total:0,categories:[],current:null,activity:[],selectedCategories:[],selectingCategories:false};
+let categoryPressTimer=null, suppressCategoryClick=false, categoryPressStart=null;
+const icons={wallet:'◫',home:'⌂',food:'♧',car:'↗',savings:'◇',business:'▥',travel:'✈',health:'＋',education:'▤',shopping:'⌑',bills:'▤'};
+function iconFor(c){let key=(c.icon||c.name||'wallet').toLowerCase();return icons[key]||({'food':'♧','rent':'⌂','transport':'↗','savings':'◇','business':'▥'}[key]||'◫')}
+function fmt(n){let value=Number(n||0);try{return new Intl.NumberFormat(undefined,{style:'currency',currency:state.currency,minimumFractionDigits:2,maximumFractionDigits:2}).format(value)}catch{return state.currency+' '+value.toFixed(2)}}
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),3300)}
+async function api(url,opts={}){let r=await fetch(url,{...opts,headers:{'Content-Type':'application/json',...(opts.headers||{})}});let d;try{d=await r.json()}catch{d={detail:'Unexpected server response'}}if(!r.ok)throw Error(d.detail||d.error||JSON.stringify(d));return d}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));let target=$('page-'+page);if(target)target.classList.add('active');document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));$('crumb').textContent='Workspace / '+({overview:'Overview',categories:'My categories',transactions:'Transactions',move:'Move money',settings:'Settings',category:state.current||'Category'}[page]||page);window.scrollTo({top:0,behavior:'smooth'});if(page==='category'&&state.current)loadCategory(state.current);if(page==='settings'){loadProfile();loadCompanyInfo()}}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+function categoryCard(c){const n=esc(c.name),selected=state.selectedCategories.includes(c.name);return `<button type="button" class="category-card selecting ${selected?'selected':''}" data-category-name="${n}" onclick="categoryCardClick(event, this.dataset.categoryName)" onpointerdown="startCategoryPress(event, this.dataset.categoryName)" onpointerup="cancelCategoryPress()" onpointercancel="cancelCategoryPress()" onpointerleave="cancelCategoryPress()" onpointermove="moveCategoryPress(event)" oncontextmenu="categoryContextMenu(event, this.dataset.categoryName)"><div class="cat-top"><span class="cat-icon" style="background:${safeColor(c.color)}">${iconFor(c)}</span><span class="arrow">${selected?'✓':state.selectingCategories?'○':'↗'}</span></div><div class="cat-name">${n}</div><div class="cat-balance">${fmt(c.balance)}</div><div class="cat-bottom"><span>${Number(c.percentage||0)}% allocation</span><span class="pill">${state.selectingCategories?(selected?'Selected':'Tap to select'):'View account'}</span></div></button>`}
+function renderCategoryTools(){
+ const selected=state.selectedCategories.length,total=state.categories.length;
+ ['overviewCategoryTools','allCategoryTools'].forEach(id=>{const el=$(id);if(!el)return;el.classList.toggle('show',state.selectingCategories);el.innerHTML=state.selectingCategories?`<div class="tools-left"><strong>${selected} selected</strong><span class="smallmuted">Tap categories to select or deselect them</span></div><div class="tools-right"><button class="btn secondary" type="button" onclick="selectAllCategories()">${selected===total&&total?'Deselect all':'Select all'}</button><button class="btn danger" type="button" ${selected?'':'disabled'} onclick="deleteSelectedCategories()">Delete selected</button><button class="btn secondary" type="button" onclick="exitCategorySelection()">Cancel</button></div>`:'';});
+ ['overviewManageBtn','allManageBtn'].forEach(id=>{const b=$(id);if(b)b.textContent=state.selectingCategories?'✓ Done':'☑ Manage';});
+}
+function toggleCategoryManagement(){if(state.selectingCategories)exitCategorySelection();else{state.selectingCategories=true;state.selectedCategories=[];refreshCategoryCards();renderCategoryTools();}}
+function enterCategorySelection(name){state.selectingCategories=true;if(name&&!state.selectedCategories.includes(name))state.selectedCategories.push(name);state.selectedCategories=state.selectedCategories.filter(n=>state.categories.some(c=>c.name===n));refreshCategoryCards();renderCategoryTools();}
+function refreshCategoryCards(){const html=state.categories.length?state.categories.map(categoryCard).join(''):'<div class="empty">No categories yet. Create your first category to get started.</div>';if($('overviewCategories'))$('overviewCategories').innerHTML=html;if($('allCategories'))$('allCategories').innerHTML=html;renderCategoryTools();}
+function categoryCardClick(event,name){if(suppressCategoryClick){suppressCategoryClick=false;event.preventDefault();return;}if(state.selectingCategories){event.preventDefault();toggleCategorySelection(name);return;}openCategory(name);}
+function toggleCategorySelection(name){state.selectingCategories=true;state.selectedCategories=state.selectedCategories.includes(name)?state.selectedCategories.filter(n=>n!==name):[...state.selectedCategories,name];refreshCategoryCards();}
+function startCategoryPress(event,name){if(event.button!==undefined&&event.button!==0)return;cancelCategoryPress();categoryPressStart={x:event.clientX,y:event.clientY};categoryPressTimer=setTimeout(()=>{suppressCategoryClick=true;setTimeout(()=>{suppressCategoryClick=false},800);enterCategorySelection(name);if(navigator.vibrate)navigator.vibrate(35);},550);}
+function moveCategoryPress(event){if(!categoryPressStart)return;if(Math.abs(event.clientX-categoryPressStart.x)>12||Math.abs(event.clientY-categoryPressStart.y)>12)cancelCategoryPress();}
+function cancelCategoryPress(){if(categoryPressTimer)clearTimeout(categoryPressTimer);categoryPressTimer=null;categoryPressStart=null;}
+function categoryContextMenu(event,name){event.preventDefault();suppressCategoryClick=true;enterCategorySelection(name);}
+function selectAllCategories(){state.selectingCategories=true;state.selectedCategories=state.selectedCategories.length===state.categories.length?[]:state.categories.map(c=>c.name);refreshCategoryCards();}
+function exitCategorySelection(){state.selectingCategories=false;state.selectedCategories=[];refreshCategoryCards();}
+async function deleteSelectedCategories(){
+ const names=[...state.selectedCategories];if(!names.length)return;
+ const cats=names.map(name=>state.categories.find(c=>c.name===name)).filter(Boolean);
+ const funded=cats.filter(c=>Math.round(Number(c.balance||0)*100)>0);
+ const negative=cats.filter(c=>Math.round(Number(c.balance||0)*100)<0);
+ if(negative.length){toast('Cannot delete categories with negative balances: '+negative.map(c=>c.name).join(', '));return;}
+ let message=`Delete ${names.length} categor${names.length===1?'y':'ies'}?`;
+ if(funded.length){message+=`\n\nThese categories contain funds that will be returned to your base account:`;funded.forEach(c=>message+=`\n• ${c.name}: ${fmt(c.balance)}`);message+='\n\nContinue?';}
+ else message+='\n\nNo funds will be moved.';
+ if(!confirm(message))return;
+ try{
+  let deleted=0,returned=0;const errors=[];
+  for(const c of cats){try{const hasFunds=Math.round(Number(c.balance||0)*100)>0;const result=await api('/categories/'+encodeURIComponent(c.name)+(hasFunds?'?confirm_funds=true':''),{method:'DELETE'});deleted++;returned+=Number(result.returned_to_base||0);}catch(err){errors.push(c.name+': '+err.message);}}
+  state.selectedCategories=[];state.selectingCategories=false;if(state.current&&names.includes(state.current))state.current=null;
+  await refreshAll();if($('page-category').classList.contains('active')&&!state.current)go('categories');
+  if(errors.length)toast(`Deleted ${deleted}; failed ${errors.length}: ${errors.join(' | ')}`);else toast(`Deleted ${deleted} categor${deleted===1?'y':'ies'}. ${fmt(returned)} returned to base account.`);
+ }catch(err){toast('Delete failed: '+err.message)}
+}
+function safeColor(c){return /^#[0-9a-fA-F]{6}$/.test(c||'')?c+'20':'#e7f5f0'}
+function esc(s){return String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+async function refreshAll(){
+ try{
+  let [b,c,s,tx,m,sp]=await Promise.all([api('/account-balances'),api('/categories'),api('/settings'),api('/transactions'),api('/all-movements'),api('/spending')]);
+  state.currency=s.currency||'KES';state.base=Number(b.base_balance||0);state.total=Number(b.total_funds||0);state.categories=c;state.activity=[];
+  tx.forEach(t=>state.activity.push({reference:t.reference,amount:t.amount,created_at:t.created_at,kind:'deposit',note:'Deposit · '+t.source,direction:'in',from_account:'external',to_account:'base',status:t.status}));
+  m.forEach(t=>state.activity.push({...t,direction:t.to_account==='external'?'out':t.from_account==='external'?'in':t.to_account==='base'?'in':'move'}));
+  sp.forEach(t=>state.activity.push({reference:t.reference,amount:t.amount,created_at:t.created_at,kind:'expense',note:'Category spending',direction:'out',from_account:t.category,to_account:'external'}));
+  state.activity.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));
+  $('totalFunds').textContent=fmt(state.total);$('baseBalance').textContent=fmt(state.base);
+  let ct=state.categories.reduce((sum,c)=>sum+Number(c.balance||0),0);
+  $('categoryTotal').textContent=fmt(ct);$('categoryNumber').textContent=state.categories.length;$('categoryCount').textContent=`Across ${state.categories.length} categories`;
+  $('overviewCategories').innerHTML=state.categories.length?state.categories.map(categoryCard).join(''):'<div class="empty">No categories yet. Create your first category to get started.</div>';
+  state.selectedCategories=state.selectedCategories.filter(n=>state.categories.some(c=>c.name===n));
+  if(!state.selectedCategories.length)state.selectingCategories=false;
+  $('allCategories').innerHTML=$('overviewCategories').innerHTML;
+  renderCategoryTools();
+  renderActivity($('recentActivity'),state.activity.slice(0,5));renderActivity($('allActivity'),state.activity);
+  fillAccountOptions();renderMovementBalances();$('currencySelect').value=state.currency;
+  if(state.current&&$('page-category').classList.contains('active'))await loadCategory(state.current);
+ }catch(e){toast('Could not load data: '+e.message)}
+}
+function renderActivity(target,rows){if(!rows.length){target.innerHTML='<div class="empty">No transactions yet. Add funds or make your first movement.</div>';return}
+target.innerHTML=rows.map(t=>{let dir=t.direction||'move';let cls=dir==='in'?'in':dir==='out'?'out':'';let sign=dir==='in'?'+':dir==='out'?'−':'';let label=t.note||t.kind||'Transaction';let date=t.created_at?new Date(t.created_at).toLocaleString():'Recently';return `<div class="txrow"><div class="txico">${dir==='in'?'↙':dir==='out'?'↗':'⇄'}</div><div class="txdesc"><strong>${esc(label)}</strong><small>${esc(t.reference||'') } · ${esc(date)}${t.from_account&&t.to_account?' · '+esc(t.from_account)+' → '+esc(t.to_account):''}</small></div><div class="txamount ${cls}">${sign}${fmt(t.amount)}</div></div>`}).join('')}
+function openCategory(name){state.current=name;go('category')}
+async function loadCategory(name){try{let c=state.categories.find(x=>x.name===name);if(!c){await refreshAll();c=state.categories.find(x=>x.name===name)}if(!c)return;state.current=name;$('detailName').textContent=name;$('detailIcon').textContent=iconFor(c);$('detailIcon').style.background=safeColor(c.color);$('detailBalance').textContent=fmt(c.balance);$('detailSubtitle').textContent=`${Number(c.percentage||0)}% of incoming funds allocated · Individual account`;let [rows,caps]=await Promise.all([api('/category-transactions/'+encodeURIComponent(name)),api('/caps')]);renderActivity($('categoryActivity'),rows);let cap=c.monthly_cap?fmt(c.monthly_cap):'No monthly cap';let usage=caps.categories&&caps.categories[name]?caps.categories[name].used_this_month:'0.00';$('categoryInfo').innerHTML=`<div class="txrow"><div class="txdesc"><strong>Allocation percentage</strong><small>Automatic allocation from deposits</small></div><b>${Number(c.percentage||0)}%</b></div><div class="txrow"><div class="txdesc"><strong>Monthly cap</strong><small>Optional spending limit</small></div><b>${cap}</b></div><div class="txrow"><div class="txdesc"><strong>Used this month</strong><small>Existing cap tracker</small></div><b>${fmt(usage)}</b></div><div style="margin-top:15px"><button class="btn secondary" onclick="openCategoryAction('transfer')">⇄ Move funds</button> <button class="btn secondary" onclick="editCurrentCategory()">✎ Edit details</button></div>`;$('crumb').textContent='Workspace / '+name}catch(e){toast(e.message)}}
+function fillAccountOptions(){let options='<option value="base">Base account</option>'+state.categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');$('fromAccount').innerHTML=options;$('toAccount').innerHTML=options+'<option value="external">External / merchant (expense only)</option>';if(state.current){$('fromAccount').value=state.current}}
+function renderMovementBalances(){$('movementBalances').innerHTML=`<div class="txrow"><div class="txico">◉</div><div class="txdesc"><strong>Base account</strong><small>Unallocated funds</small></div><b>${fmt(state.base)}</b></div>`+state.categories.map(c=>`<div class="txrow"><div class="txico">${iconFor(c)}</div><div class="txdesc"><strong>${esc(c.name)}</strong><small>${Number(c.percentage||0)}% allocation</small></div><b>${fmt(c.balance)}</b></div>`).join('')}
+$('moveKind').addEventListener('change',()=>{let expense=$('moveKind').value==='expense';if(expense){$('toAccount').value='external';$('fromAccount').value=state.current||state.categories[0]?.name||'base'}else if($('toAccount').value==='external')$('toAccount').value='base'});
+$('movementForm').addEventListener('submit',async e=>{e.preventDefault();try{let kind=$('moveKind').value,from=$('fromAccount').value,to=$('toAccount').value;if(kind==='expense'&&to!=='external')throw Error('For spending, destination must be External / merchant.');let result=await api('/movements',{method:'POST',body:JSON.stringify({reference:'PF-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),from_account:from,to_account:to,amount:$('moveAmount').value,kind,note:$('moveNote').value})});toast('Transaction recorded locally');$('movementForm').reset();await refreshAll();if(state.current)await loadCategory(state.current)}catch(err){toast(err.message)}});
+function openCreateCategory(){modalForm('Create category',`<form id="categoryForm"><div class="formgrid"><div class="field full"><label>Category name</label><input id="newCatName" maxlength="40" placeholder="e.g. Rent, Groceries, Travel" required></div><div class="field"><label>Allocation percentage</label><input id="newCatPercent" type="number" min="0" max="100" value="0" required></div><div class="field"><label>Category colour</label><select id="newCatColor"><option value="#27856B">Emerald green</option><option value="#4778d0">Blue</option><option value="#b97833">Amber</option><option value="#9163bd">Purple</option><option value="#d66c78">Rose</option><option value="#418c9d">Teal</option></select></div><div class="field full"><label>Icon</label><select id="newCatIcon"><option value="wallet">General / Wallet</option><option value="food">Food</option><option value="home">Home / Rent</option><option value="savings">Savings</option><option value="business">Business</option><option value="car">Transport</option><option value="travel">Travel</option><option value="health">Health</option><option value="education">Education</option></select></div></div><div class="form-actions"><button class="btn primary">Create category</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
+$('categoryForm').onsubmit=async e=>{e.preventDefault();try{let d=await api('/categories',{method:'POST',body:JSON.stringify({name:$('newCatName').value.trim(),percentage:Number($('newCatPercent').value),color:$('newCatColor').value,icon:$('newCatIcon').value})});closeModal();await refreshAll();toast('Category created');openCategory(d.created)}catch(err){toast(err.message)}}}
+async function deleteCurrentCategory(){
+ const name=state.current;
+ if(!name)return;
+ try{
+  let result;
+  try{
+   result=await api('/categories/'+encodeURIComponent(name),{method:'DELETE'});
+  }catch(err){
+   const match=String(err.message||'').match(/^CONFIRM_FUNDS:(\d+(?:\.\d{1,2})?)$/);
+   if(!match)throw err;
+   const amount=fmt(Number(match[1]));
+   if(!confirm(`This category still contains ${amount}. If you delete it, the full remaining balance will be returned to your base account. Are you sure you want to delete “${name}”?`))return;
+   result=await api('/categories/'+encodeURIComponent(name)+'?confirm_funds=true',{method:'DELETE'});
+  }
+  state.current=null;
+  await refreshAll();
+  go('categories');
+  toast(Number(result.returned_to_base||0)>0?`Category deleted. ${fmt(result.returned_to_base)} returned to base account.`:'Category deleted');
+ }catch(err){toast(err.message)}
+}
+function editCurrentCategory(){let c=state.categories.find(x=>x.name===state.current);if(!c)return;modalForm('Edit category',`<form id="editCatForm"><div class="formgrid"><div class="field full"><label>Category name</label><input id="editCatName" maxlength="40" value="${esc(c.name)}" required></div><div class="field"><label>Allocation percentage</label><input id="editCatPercent" type="number" min="0" max="100" value="${Number(c.percentage||0)}" required></div><div class="field"><label>Colour</label><select id="editCatColor">${[['#27856B','Emerald green'],['#4778d0','Blue'],['#b97833','Amber'],['#9163bd','Purple'],['#d66c78','Rose'],['#418c9d','Teal']].map(x=>`<option value="${x[0]}" ${x[0]===c.color?'selected':''}>${x[1]}</option>`).join('')}</select></div><div class="field full"><label>Icon</label><select id="editCatIcon">${['wallet','food','home','savings','business','car','travel','health','education'].map(x=>`<option value="${x}" ${x===c.icon?'selected':''}>${x}</option>`).join('')}</select></div></div><div class="form-actions"><button class="btn primary">Save changes</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
+$('editCatForm').onsubmit=async e=>{e.preventDefault();try{let name=$('editCatName').value.trim();await api('/categories/'+encodeURIComponent(c.name),{method:'PUT',body:JSON.stringify({name,percentage:Number($('editCatPercent').value),color:$('editCatColor').value,icon:$('editCatIcon').value})});state.current=name;closeModal();await refreshAll();go('category');toast('Category updated')}catch(err){toast(err.message)}}}
+function openCategoryAction(mode){go('move');if(mode==='expense'){$('moveKind').value='expense';$('fromAccount').value=state.current;$('toAccount').value='external'}else{$('moveKind').value='transfer';$('fromAccount').value=mode==='add'?'base':state.current;$('toAccount').value=mode==='add'?state.current:'base'}$('moveKind').dispatchEvent(new Event('change'));if(mode!=='expense'){$('fromAccount').value=mode==='add'?'base':state.current;$('toAccount').value=mode==='add'?state.current:'base'}}
+function openDeposit(){modalForm('Add funds to base account',`<div class="notice">This records a local test deposit. It is not a real bank or M-Pesa payment.</div><form id="depositForm"><div class="formgrid"><div class="field full"><label>Amount</label><input id="depositAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div><div class="field full"><label>Source</label><select id="depositSource"><option value="manual_test">Manual test deposit</option><option value="mpesa_sandbox">M-Pesa sandbox</option><option value="kcb_sandbox">KCB sandbox</option></select></div></div><div class="form-actions"><button class="btn primary">Record deposit</button><button type="button" class="btn secondary" onclick="closeModal()">Cancel</button></div></form>`);
+$('depositForm').onsubmit=async e=>{e.preventDefault();let ref='PFDEP-'+Date.now();try{await api('/transactions',{method:'POST',body:JSON.stringify({reference:ref,source:$('depositSource').value,amount:$('depositAmount').value,status:'confirmed'})});await api('/allocate/'+encodeURIComponent(ref),{method:'POST'});closeModal();await refreshAll();toast('Deposit recorded and allocation rules applied')}catch(err){toast(err.message)}}}
+function modalForm(title,body){let old=$('modalBackdrop');if(old)old.remove();let el=document.createElement('div');el.id='modalBackdrop';el.style.cssText='position:fixed;inset:0;background:#122c2780;z-index:30;display:grid;place-items:center;padding:18px;overflow:auto';el.innerHTML=`<div style="width:min(560px,100%);background:white;border-radius:20px;padding:24px;box-shadow:0 25px 90px #0002;margin:auto"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px"><h2 style="margin:0;font-size:21px">${esc(title)}</h2><button class="iconbtn" onclick="closeModal()">×</button></div>${body}</div>`;document.body.appendChild(el);el.addEventListener('click',e=>{if(e.target===el)closeModal()})}
+function closeModal(){let el=$('modalBackdrop');if(el)el.remove()}
+
+function toggleProfileEditor(){
+ const form=$('profileForm');
+ const opening=form.style.display==='none'||!form.style.display;
+ form.style.display=opening?'block':'none';
+ const button=document.querySelector('#profileSummary button');
+ if(button)button.textContent=opening?'Cancel':'Edit profile';
+ if(opening)loadProfile();
+}
+async function loadProfile(){try{const p=await api('/api/me');$('profileSummaryName').textContent=p.full_name||'Your account';$('profileSummaryEmail').textContent=p.email||'No email available';$('profileFullName').value=p.full_name||'';$('profileEmail').value=p.email||'';$('profilePhone').value=p.phone||'';$('profileAddress').value=p.address||'';const img=$('profilePreview'), initials=$('profileInitials');if(p.profile_picture_url){img.src=p.profile_picture_url+'?v='+Date.now();img.style.display='block';initials.style.display='none'}else{img.style.display='none';initials.style.display='grid';initials.textContent=(p.full_name||'PF').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'PF'}}catch(e){toast('Could not load profile: '+e.message)}}
+let profilePhotoData='';
+$('profilePhotoInput').addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>1000000){toast('Choose PNG, JPEG or WebP under 1 MB');e.target.value='';return}const reader=new FileReader();reader.onload=()=>{profilePhotoData=String(reader.result||'');$('profilePreview').src=profilePhotoData;$('profilePreview').style.display='block';$('profileInitials').style.display='none'};reader.readAsDataURL(file)});
+$('profileForm').addEventListener('submit',async e=>{e.preventDefault();try{const body={full_name:$('profileFullName').value,email:$('profileEmail').value,address:$('profileAddress').value,phone:$('profilePhone').value,profile_picture_data:profilePhotoData};const p=await api('/api/profile',{method:'PUT',body:JSON.stringify(body)});profilePhotoData='';$('profilePhotoInput').value='';toast('Profile saved successfully');await loadProfile();$('profileForm').style.display='none';const editButton=document.querySelector('#profileSummary button');if(editButton)editButton.textContent='Edit profile'}catch(err){toast('Profile save failed: '+err.message)}});
+async function removeProfilePhoto(){if(!confirm('Remove your profile photo?'))return;try{await api('/api/profile-picture/remove',{method:'POST'});profilePhotoData='';$('profilePhotoInput').value='';await loadProfile();toast('Profile photo removed')}catch(e){toast('Could not remove photo: '+e.message)}}
+
+let companyInfo = {};
+async function loadCompanyInfo(){
+ try {
+  companyInfo = await api('/api/company-info');
+  const d=companyInfo;
+  const details=[];
+  if(d.contact_email) details.push('Email: '+d.contact_email);
+  if(d.contact_phone) details.push('Phone: '+d.contact_phone);
+  if(d.contact_whatsapp) details.push('WhatsApp: '+d.contact_whatsapp);
+  if(d.contact_address) details.push('Address: '+d.contact_address);
+  $('supportContactDetails').textContent=details.join(' · ')||'Contact details have not been configured yet.';
+  $('termsSummary').textContent=d.terms?'Terms are available to read.':'Terms have not been configured yet.';
+  $('privacySummary').textContent=d.privacy_policy?'Privacy policy is available to read.':'Privacy policy has not been configured yet.';
+ } catch(e) {
+  $('supportContactDetails').textContent='Could not load support details.';
+  $('termsSummary').textContent='Could not load terms.';
+  $('privacySummary').textContent='Could not load privacy policy.';
+ }
+}
+function showSupportContact(){
+ const d=companyInfo, rows=[];
+ if(d.contact_email) rows.push('Email: '+d.contact_email);
+ if(d.contact_phone) rows.push('Phone: '+d.contact_phone);
+ if(d.contact_whatsapp) rows.push('WhatsApp: '+d.contact_whatsapp);
+ if(d.contact_address) rows.push('Address: '+d.contact_address);
+ if(d.socials) for(const [k,v] of Object.entries(d.socials)) if(v) rows.push(k+': '+v);
+ showInfo('Contact & Support',rows.join('\n')||'The administrator has not configured contact details yet.');
+}
+function showCompanyDocument(key,title){
+ showInfo(title,(companyInfo[key]||'').trim()||title+' has not been configured by the administrator yet.');
+}
+
+function showInfo(title,body){modalForm(title,`<p style="line-height:1.65;color:#526561">${esc(body)}</p><div class="form-actions"><button class="btn primary" type="button" onclick="closeModal()">Close</button></div>`)}
+async function signOut(){if(!confirm('Sign out of Pesa Flow on this device?'))return;try{await api('/api/logout',{method:'POST'});location.href='/login'}catch(e){toast('Sign out failed: '+e.message)}}
+async function saveCurrency(){try{let currency=$('currencySelect').value;await api('/settings/currency',{method:'PUT',body:JSON.stringify({currency})});await refreshAll();toast('Currency preference saved')}catch(e){toast(e.message)}}
+async function openRules(){let [rules,cats]=await Promise.all([api('/rules'),api('/categories')]);$('rulesFields').innerHTML=cats.map(c=>`<div class="field"><label>${esc(c.name)} (%)</label><input type="number" min="0" max="100" data-rule="${esc(c.name)}" value="${Number(rules[c.name]||0)}" required></div>`).join('');$('rulesPanel').style.display='block';$('rulesPanel').scrollIntoView({behavior:'smooth',block:'center'})}
+$('rulesForm').addEventListener('submit',async e=>{e.preventDefault();try{let percentages={};document.querySelectorAll('[data-rule]').forEach(x=>percentages[x.dataset.rule]=Number(x.value));await api('/rules',{method:'POST',body:JSON.stringify({percentages})});await refreshAll();toast('Allocation rules saved')}catch(e){toast(e.message)}});
+refreshAll();
+</script>
+<!-- Modal styles are isolated to this lightweight form overlay. -->
+</body></html>
