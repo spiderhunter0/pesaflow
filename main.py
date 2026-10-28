@@ -1364,10 +1364,19 @@ def init_admin_auth_db():
     except OSError: pass
 
 def read_admin_config():
+    raw = os.environ.get("PF_ADMIN_AUTH_JSON")
+    if raw:
+        try:
+            value = json.loads(raw)
+            if isinstance(value, dict) and value.get("version") == 1:
+                return value
+        except (ValueError, TypeError):
+            pass
     try:
         value = json.loads(ADMIN_CONFIG_PATH.read_text(encoding="utf-8"))
-        return value if value.get("version") == 1 else None
-    except (OSError, ValueError, TypeError): return None
+        return value if isinstance(value, dict) and value.get("version") == 1 else None
+    except (OSError, ValueError, TypeError):
+        return None
 
 def verify_admin_secret(value, item, iterations=600_000):
     try:
