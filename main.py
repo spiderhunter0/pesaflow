@@ -11,6 +11,8 @@ import hashlib
 import secrets
 import shutil
 import threading
+import smtplib
+from email.message import EmailMessage
 import base64
 import binascii
 from pathlib import Path
@@ -43,7 +45,6 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 DB = str(DATA_DIR / "finance.db")
 AUTH_DB = DATA_DIR / "auth.sqlite3"
 USER_DB_DIR = DATA_DIR / "user_data"
-SETUP_TOKEN_FILE = DATA_DIR / ".pf_setup_token"
 PROFILE_DIR = DATA_DIR / "profile_data"
 PROFILE_DIR.mkdir(mode=0o700, exist_ok=True)
 try:
@@ -1267,6 +1268,19 @@ def init_auth_db():
             attempts INTEGER NOT NULL DEFAULT 0,
             window_start TEXT NOT NULL
         )""")
+        con.execute("""CREATE TABLE IF NOT EXISTS password_reset_tokens (
+            token_hash TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            expires_at TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            used_at TEXT
+        )""")
+        con.execute("CREATE INDEX IF NOT EXISTS password_reset_user_idx ON password_reset_tokens(user_id)")
+        con.execute("""CREATE TABLE IF NOT EXISTS password_reset_attempts (
+            ip TEXT PRIMARY KEY,
+            attempts INTEGER NOT NULL DEFAULT 0,
+            window_start TEXT NOT NULL
+        )""")
         con.execute("""CREATE TABLE IF NOT EXISTS mpesa_payment_routes (
             internal_reference TEXT PRIMARY KEY,
             checkout_id TEXT UNIQUE,
@@ -1339,21 +1353,6 @@ def initialize_user_database(path: Path, copy_legacy: bool):
         pass
 
 
-def ensure_setup_token():
-    with auth_connect() as con:
-        count = con.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-    if count == 0:
-        if not SETUP_TOKEN_FILE.exists():
-            token = secrets.token_urlsafe(24)
-            SETUP_TOKEN_FILE.write_text(token, encoding="utf-8")
-            try:
-                SETUP_TOKEN_FILE.chmod(0o600)
-            except OSError:
-                pass
-        # The token is visible only in the local server terminal / protected file.
-        print("\\nPesa Flow first-account setup token (required for the first account): " + SETUP_TOKEN_FILE.read_text(encoding="utf-8").strip())
-
-
 ADMIN_SESSION_HOURS = 4
 ADMIN_CONFIG_PATH = DATA_DIR / ".pf_admin_auth.json"
 
@@ -1408,14 +1407,21 @@ def init_company_info_db():
 
 
 init_company_info_db()
-ensure_setup_token()
 
 
 class RegisterIn(BaseModel):
     full_name: str = Field(min_length=2, max_length=80)
     email: str = Field(min_length=3, max_length=254)
     password: str = Field(min_length=12, max_length=128)
-    setup_token: str = Field(default="", max_length=200)
+
+
+class PasswordResetRequestIn(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+
+
+class PasswordResetConfirmIn(BaseModel):
+    token: str = Field(min_length=20, max_length=256)
+    password: str = Field(min_length=12, max_length=128)
 
 
 class ProfileIn(BaseModel):
@@ -1484,7 +1490,7 @@ async def authentication_and_security_middleware(request: Request, call_next):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Content-Security-Policy"] = "frame-ancestors 'none'"
         return response
-    public_paths = {"/", "/login", "/api/status", "/api/register", "/api/login", "/api/mpesa/callback", "/favicon.ico", "/admin-login"}
+    public_paths = {"/", "/login", "/api/status", "/api/register", "/api/login", "/api/password-reset/request", "/api/password-reset/confirm", "/api/mpesa/callback", "/favicon.ico", "/admin-login"}
     user = None
     raw_token = request.cookies.get("pf_session")
     if raw_token and (len(raw_token) > 256 or not raw_token.isascii()):
@@ -1565,7 +1571,7 @@ def admin_login_page():
 def auth_status():
     with auth_connect() as con:
         count = con.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-    return {"setup_required": count == 0, "registration_enabled": count == 0 or os.environ.get("PF_ALLOW_REGISTRATION", "1") != "0"}
+    return {"setup_required": False, "registration_enabled": os.environ.get("PF_ALLOW_REGISTRATION", "0") != "0"}
 
 
 @app.post("/api/register")
@@ -1594,14 +1600,7 @@ def register_user(data: RegisterIn, request: Request):
         with auth_connect() as con:
             con.execute("BEGIN IMMEDIATE")
             count = con.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-            if count == 0:
-                try:
-                    expected = SETUP_TOKEN_FILE.read_text(encoding="utf-8").strip()
-                except OSError:
-                    expected = ""
-                if not expected or not hmac.compare_digest(data.setup_token, expected):
-                    raise HTTPException(403, "The first account requires the setup token shown in the server terminal")
-            elif os.environ.get("PF_ALLOW_REGISTRATION", "1") == "0":
+            if os.environ.get("PF_ALLOW_REGISTRATION", "0") == "0":
                 raise HTTPException(403, "New account registration is disabled")
             if con.execute("SELECT 1 FROM users WHERE email=?", (email,)).fetchone():
                 raise HTTPException(409, "An account with that email already exists")
@@ -1612,14 +1611,137 @@ def register_user(data: RegisterIn, request: Request):
             now = utc_now().isoformat()
             con.execute("INSERT INTO users(id,email,full_name,password_salt,password_hash,db_path,created_at) VALUES(?,?,?,?,?,?,?)",
                         (user_id, email, full_name, salt.hex(), hash_password(data.password, salt), str(db_path), now))
-        if count == 0:
-            try:
-                SETUP_TOKEN_FILE.unlink()
-            except OSError:
-                pass
     response = JSONResponse({"ok": True, "email": email, "full_name": full_name})
     issue_session(response, user_id)
     return response
+
+
+def send_password_reset_email(recipient: str, reset_url: str) -> None:
+    host = os.environ.get("PF_SMTP_HOST", "").strip()
+    username = os.environ.get("PF_SMTP_USER", "").strip()
+    password = os.environ.get("PF_SMTP_PASSWORD", "")
+    sender = os.environ.get("PF_SMTP_FROM", username).strip()
+    if not host or not sender:
+        raise HTTPException(503, "Password reset email is not configured yet. Set PF_SMTP_HOST and PF_SMTP_FROM on the server.")
+    try:
+        port = int(os.environ.get("PF_SMTP_PORT", "587"))
+    except ValueError:
+        raise HTTPException(503, "Password reset email settings are invalid.")
+    msg = EmailMessage()
+    msg["Subject"] = "Reset your Pesa Flow password"
+    msg["From"] = sender
+    msg["To"] = recipient
+    msg.set_content(
+        "A password reset was requested for your Pesa Flow account.\n\n"
+        "Use this link within 30 minutes to choose a new password:\n" + reset_url +
+        "\n\nIf you did not request this, ignore this email."
+    )
+    try:
+        with smtplib.SMTP(host, port, timeout=15) as smtp:
+            smtp.ehlo()
+            if os.environ.get("PF_SMTP_TLS", "1") != "0":
+                smtp.starttls()
+                smtp.ehlo()
+            if username:
+                smtp.login(username, password)
+            smtp.send_message(msg)
+    except (OSError, smtplib.SMTPException) as exc:
+        raise HTTPException(503, "Unable to send the reset email right now. Please try again later.") from exc
+
+
+@app.post("/api/password-reset/request")
+def request_password_reset(data: PasswordResetRequestIn, request: Request):
+    email = valid_email(data.email)
+    if not os.environ.get("PF_SMTP_HOST", "").strip() or not os.environ.get("PF_SMTP_FROM", os.environ.get("PF_SMTP_USER", "")).strip():
+        raise HTTPException(503, "Password reset email is not configured yet. The server administrator must configure SMTP email settings.")
+    ip = request.client.host if request.client else "unknown"
+    now_limit = utc_now()
+    with auth_connect() as con:
+        attempt = con.execute("SELECT * FROM password_reset_attempts WHERE ip=?", (ip,)).fetchone()
+        if not attempt or now_limit - datetime.fromisoformat(attempt["window_start"]) > timedelta(hours=1):
+            attempts, window_start = 1, now_limit
+        else:
+            attempts, window_start = attempt["attempts"] + 1, datetime.fromisoformat(attempt["window_start"])
+        con.execute("INSERT INTO password_reset_attempts(ip,attempts,window_start) VALUES(?,?,?) ON CONFLICT(ip) DO UPDATE SET attempts=excluded.attempts,window_start=excluded.window_start", (ip, attempts, window_start.isoformat()))
+        if attempts > 5:
+            raise HTTPException(429, "Too many password reset requests. Try again later.")
+        # Keep the response generic to avoid revealing whether an account exists.
+        user = con.execute("SELECT id FROM users WHERE email=?", (email,)).fetchone()
+    if not user:
+        return {"ok": True, "message": "If that email belongs to an account, reset instructions will be sent."}
+    raw_token = secrets.token_urlsafe(32)
+    token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
+    now = utc_now()
+    expires = now + timedelta(minutes=30)
+    with auth_connect() as con:
+        con.execute("DELETE FROM password_reset_tokens WHERE user_id=? OR expires_at<=?", (user["id"], now.isoformat()))
+        con.execute("INSERT INTO password_reset_tokens(token_hash,user_id,expires_at,created_at) VALUES(?,?,?,?)",
+                    (token_hash, user["id"], expires.isoformat(), now.isoformat()))
+    base_url = os.environ.get("PF_PUBLIC_BASE_URL", "").strip().rstrip("/")
+    if not base_url.startswith("https://"):
+        raise HTTPException(503, "Password reset is not configured. Set PF_PUBLIC_BASE_URL to your public HTTPS app URL.")
+    reset_url = base_url + "/login?reset_token=" + raw_token
+    try:
+        send_password_reset_email(email, reset_url)
+    except HTTPException:
+        with auth_connect() as con:
+            con.execute("DELETE FROM password_reset_tokens WHERE token_hash=?", (token_hash,))
+        raise
+    return {"ok": True, "message": "If that email belongs to an account, reset instructions will be sent."}
+
+
+@app.post("/api/password-reset/confirm")
+def confirm_password_reset(data: PasswordResetConfirmIn):
+    if len(data.password) < 12:
+        raise HTTPException(400, "Use a password with at least 12 characters")
+
+    token_hash = hashlib.sha256(data.token.encode()).hexdigest()
+    now = utc_now()
+
+    with auth_connect() as con:
+        con.execute("BEGIN IMMEDIATE")
+        row = con.execute(
+            "SELECT user_id, expires_at, used_at FROM password_reset_tokens WHERE token_hash=?",
+            (token_hash,),
+        ).fetchone()
+
+        if (
+            not row
+            or row["used_at"]
+            or datetime.fromisoformat(row["expires_at"]) <= now
+        ):
+            raise HTTPException(
+                400,
+                "This reset link is invalid or has expired. Request a new one.",
+            )
+
+        claimed = con.execute(
+            """UPDATE password_reset_tokens SET used_at=?
+               WHERE token_hash=? AND used_at IS NULL AND expires_at>?""",
+            (now.isoformat(), token_hash, now.isoformat()),
+        )
+
+        if claimed.rowcount != 1:
+            raise HTTPException(400, "This reset link has already been used or expired.")
+
+        salt = secrets.token_bytes(16)
+        con.execute(
+            "UPDATE users SET password_salt=?, password_hash=? WHERE id=?",
+            (salt.hex(), hash_password(data.password, salt), row["user_id"]),
+        )
+        con.execute(
+            "DELETE FROM sessions WHERE user_id=?",
+            (row["user_id"],),
+        )
+        con.execute(
+            "DELETE FROM password_reset_tokens WHERE user_id=? AND token_hash<>?",
+            (row["user_id"], token_hash),
+        )
+
+    return {
+        "ok": True,
+        "message": "Password reset successfully. Sign in with your new password.",
+    }
 
 
 @app.post("/api/login")
