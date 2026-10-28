@@ -1645,7 +1645,9 @@ def send_password_reset_email(recipient: str, reset_url: str) -> None:
             if username:
                 smtp.login(username, password)
             smtp.send_message(msg)
+            print("PF_RESET_SMTP_ACCEPTED", flush=True)
     except (OSError, smtplib.SMTPException) as exc:
+        print("PF_RESET_SMTP_ERROR:", type(exc).__name__, flush=True)
         raise HTTPException(503, "Unable to send the reset email right now. Please try again later.") from exc
 
 
@@ -1668,6 +1670,7 @@ def request_password_reset(data: PasswordResetRequestIn, request: Request):
         # Keep the response generic to avoid revealing whether an account exists.
         user = con.execute("SELECT id FROM users WHERE email=?", (email,)).fetchone()
     if not user:
+        print("PF_RESET_ACCOUNT_NOT_FOUND", flush=True)
         return {"ok": True, "message": "If that email belongs to an account, reset instructions will be sent."}
     raw_token = secrets.token_urlsafe(32)
     token_hash = hashlib.sha256(raw_token.encode()).hexdigest()
