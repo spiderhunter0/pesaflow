@@ -1229,10 +1229,14 @@ def init_auth_db():
             ("phone", "TEXT NOT NULL DEFAULT ''"),
             ("profile_picture", "TEXT NOT NULL DEFAULT ''"),
             ("handle", "TEXT NOT NULL DEFAULT ''"),
+            ("username", "TEXT NOT NULL DEFAULT ''"),
+            ("country", "TEXT NOT NULL DEFAULT ''"),
+            ("date_of_birth", "TEXT NOT NULL DEFAULT ''"),
         ):
             if column not in user_columns:
                 con.execute(f"ALTER TABLE users ADD COLUMN {column} {definition}")
         con.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_handle_unique ON users(lower(handle)) WHERE handle <> ''")
+        con.execute("CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users(lower(username)) WHERE username <> ''")
         con.execute("""CREATE TABLE IF NOT EXISTS account_registry (
             account_number TEXT PRIMARY KEY,
             user_id TEXT NOT NULL REFERENCES users(id),
@@ -1421,7 +1425,11 @@ init_company_info_db()
 class RegisterIn(BaseModel):
     full_name: str = Field(min_length=2, max_length=80)
     email: str = Field(min_length=3, max_length=254)
+    username: str = Field(min_length=3, max_length=24)
+    country: str = Field(min_length=2, max_length=80)
+    date_of_birth: str = Field(min_length=10, max_length=10)
     password: str = Field(min_length=12, max_length=128)
+    password_confirmation: str = Field(min_length=12, max_length=128)
 
 
 class PasswordResetRequestIn(BaseModel):
@@ -1442,7 +1450,9 @@ class ProfileIn(BaseModel):
 
 
 class LoginIn(BaseModel):
-    email: str = Field(min_length=3, max_length=254)
+    identifier: str | None = Field(default=None, min_length=3, max_length=254)
+    # Keep email accepted for compatibility with existing clients.
+    email: str | None = Field(default=None, min_length=3, max_length=254)
     password: str = Field(min_length=1, max_length=128)
 
 
@@ -1589,6 +1599,21 @@ def register_user(data: RegisterIn, request: Request):
     if len(full_name) < 2:
         raise HTTPException(400, "Enter your full name")
     email = valid_email(data.email)
+    username = data.username.strip().lower()
+    country = " ".join(data.country.split())
+    date_of_birth = data.date_of_birth.strip()
+    if not re.fullmatch(r"[a-z0-9_]{3,24}", username):
+        raise HTTPException(400, "Username must be 3–24 characters using letters, numbers, or underscores")
+    if len(country) < 2:
+        raise HTTPException(400, "Select or enter your country")
+    try:
+        dob = datetime.strptime(date_of_birth, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(400, "Enter a valid date of birth")
+    if dob > datetime.now(timezone.utc).date():
+        raise HTTPException(400, "Date of birth cannot be in the future")
+    if data.password != data.password_confirmation:
+        raise HTTPException(400, "The passwords do not match")
     if len(data.password) < 12:
         raise HTTPException(400, "Use a password with at least 12 characters")
     ip = request.client.host if request.client else "unknown"
@@ -1613,14 +1638,16 @@ def register_user(data: RegisterIn, request: Request):
                 raise HTTPException(403, "New account registration is disabled")
             if con.execute("SELECT 1 FROM users WHERE email=?", (email,)).fetchone():
                 raise HTTPException(409, "An account with that email already exists")
+            if con.execute("SELECT 1 FROM users WHERE lower(username)=?", (username,)).fetchone():
+                raise HTTPException(409, "That username is already taken")
             user_id = uuid4().hex
             db_path = user_db_path(user_id)
             initialize_user_database(db_path, copy_legacy=(count == 0))
             salt = secrets.token_bytes(16)
             now = utc_now().isoformat()
-            con.execute("INSERT INTO users(id,email,full_name,password_salt,password_hash,db_path,created_at) VALUES(?,?,?,?,?,?,?)",
-                        (user_id, email, full_name, salt.hex(), hash_password(data.password, salt), str(db_path), now))
-    response = JSONResponse({"ok": True, "email": email, "full_name": full_name})
+            con.execute("INSERT INTO users(id,email,full_name,password_salt,password_hash,db_path,created_at,username,country,date_of_birth) VALUES(?,?,?,?,?,?,?,?,?,?)",
+                        (user_id, email, full_name, salt.hex(), hash_password(data.password, salt), str(db_path), now, username, country, date_of_birth))
+    response = JSONResponse({"ok": True, "email": email, "full_name": full_name, "username": username})
     issue_session(response, user_id)
     return response
 
@@ -1758,20 +1785,22 @@ def confirm_password_reset(data: PasswordResetConfirmIn):
 
 @app.post("/api/login")
 def login_user(data: LoginIn, request: Request):
-    email = data.email.strip().lower()[:254]
+    identifier = (data.identifier or data.email or "").strip().lower()[:254]
+    if len(identifier) < 3:
+        raise HTTPException(400, "Enter your email or username")
     ip = request.client.host if request.client else "unknown"
     now = utc_now()
     with auth_connect() as con:
-        attempt = con.execute("SELECT * FROM login_attempts WHERE email=? AND ip=?", (email, ip)).fetchone()
+        attempt = con.execute("SELECT * FROM login_attempts WHERE email=? AND ip=?", (identifier, ip)).fetchone()
         if attempt and attempt["locked_until"] and datetime.fromisoformat(attempt["locked_until"]) > now:
             raise HTTPException(429, "Too many login attempts. Try again in 15 minutes.")
-        user = con.execute("SELECT * FROM users WHERE email=?", (email,)).fetchone()
+        user = con.execute("SELECT * FROM users WHERE lower(email)=? OR lower(username)=? LIMIT 1", (identifier, identifier)).fetchone()
     salt = bytes.fromhex(user["password_salt"]) if user else b"pesa-flow-dummy-salt"
     calculated = hash_password(data.password, salt)
     valid = bool(user) and hmac.compare_digest(calculated, user["password_hash"])
     if not valid:
         with auth_connect() as con:
-            attempt = con.execute("SELECT * FROM login_attempts WHERE email=? AND ip=?", (email, ip)).fetchone()
+            attempt = con.execute("SELECT * FROM login_attempts WHERE email=? AND ip=?", (identifier, ip)).fetchone()
             if not attempt or now - datetime.fromisoformat(attempt["window_start"]) > timedelta(minutes=15):
                 failures, window_start = 1, now
             else:
@@ -1782,9 +1811,9 @@ def login_user(data: LoginIn, request: Request):
                 (email, ip, failures, window_start.isoformat(), locked_until))
         raise HTTPException(401, "Invalid email or password")
     with auth_connect() as con:
-        con.execute("DELETE FROM login_attempts WHERE email=? AND ip=?", (email, ip))
+        con.execute("DELETE FROM login_attempts WHERE email=? AND ip=?", (identifier, ip))
         con.execute("DELETE FROM sessions WHERE user_id=? AND expires_at<=?", (user["id"], now.isoformat()))
-    response = JSONResponse({"ok": True, "email": email})
+    response = JSONResponse({"ok": True, "email": user["email"]})
     issue_session(response, user["id"])
     return response
 
