@@ -1808,7 +1808,7 @@ def login_user(data: LoginIn, request: Request):
             locked_until = (now + timedelta(minutes=15)).isoformat() if failures >= 5 else None
             con.execute("""INSERT INTO login_attempts(email,ip,failures,window_start,locked_until) VALUES(?,?,?,?,?)
                 ON CONFLICT(email,ip) DO UPDATE SET failures=excluded.failures,window_start=excluded.window_start,locked_until=excluded.locked_until""",
-                (email, ip, failures, window_start.isoformat(), locked_until))
+                (identifier, ip, failures, window_start.isoformat(), locked_until))
         raise HTTPException(401, "Invalid email or password")
     with auth_connect() as con:
         con.execute("DELETE FROM login_attempts WHERE email=? AND ip=?", (identifier, ip))
